@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Switch</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 70px;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <fieldset>
+            <legend>MQTT</legend>
+            <div>
+                <label for="username">Username</label>
+                <input type=text name=username id=username />
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type=password name=password id=password />
+            </div>
+            <div>
+                <label for="topic">Topic</label>
+                <input type=text name=topic id=topic size=40 value=itp/deviceX/led />
+            </div>
+            <div>
+                <button id=connectButton onclick="event.preventDefault(); connect(); return false;">Connect</button>
+                <button id=disconnectButton onclick="event.preventDefault(); disconnect(); return false;" hidden=true>Disconnect</button>  
+            </div>
+        </fieldset>
+
+        <fieldset id="radioButtons" disabled=true>
+            <legend>LED</legend>
+            <div>
+                <input type="radio" id="onRadioButton" name="led" onchange="on()" value="ON" />
+                <label for="onRadioButton">On</label>
+            </div>
+            <div>
+                <input type="radio" id="offRadioButton" name="led" onchange="off()" value="OFF" />
+                <label for="offRadioButton">Off</label>
+            </div>
+        </fieldset>
+    </form>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
