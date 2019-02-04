@@ -1,0 +1,15 @@
+{
+  "name": "itp-mqtt-examples",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Node MQTT examples for ITP Device to Database class",
+  "main": "listen.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Don Coleman",
+  "license": "ISC",
+  "dependencies": {
+    "mqtt": "^2.18.8"
+  }
+}
