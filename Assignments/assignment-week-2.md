@@ -19,6 +19,8 @@ Document the project on your blog. Include enough information so I can understan
 
 For the screenshot of data from the MQTT broker you can use the [subscribe example](../02_Arduino_MQTT/www/subscribe/) or any other MQTT client.
 
+Send your data to the MQTT broker we used in class `iotwork.shop`.
+
 Your program should continue to send temperature and humidity data along with data from your new sensor(s). The example code sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? It's OK if temperature and humidity data is sent at a different interval than your new sensor data.
 
 You'll need to choose a new topic or topics for your sensor data. Document the topic names and what data you are publishing. For example we publish temperature to *itp/${deviceId}/temperature*. The payload is temperature in degrees Fahrenheit.
