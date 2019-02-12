@@ -278,4 +278,6 @@ OK, back to querying. Now that we set the timezone in our client, dates are conv
 
 The database stores dates in UTC. Dates can be converted to a local timezone before being displayed to the user. Always include a timezone component in your timestamps so the conversion happens correctly.
 
+See [more-queries.md](more-queries.md) for more queries you can run against an additional dataset.
+
 &copy; 2019 Don Coleman
