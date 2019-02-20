@@ -1,4 +1,6 @@
 // Print the WiFi firmware version and MAC address for MRK boards
+// Based on https://www.arduino.cc/en/Reference/WiFiNINAMACAddress
+// and https://forum.arduino.cc/index.php?topic=114568.msg862118#msg862118
 
 #include <SPI.h>
 #ifdef ARDUINO_SAMD_MKR1000
@@ -23,18 +25,11 @@ void setup() {
   Serial.println(WiFi.firmwareVersion());
 
   WiFi.macAddress(mac);
+
+  char address[18] = {0};
+  sprintf(address,"%02X:%02X:%02X:%02X:%02X:%02X",mac[5],mac[4],mac[3],mac[2],mac[1],mac[0]);
   Serial.print("MAC ");
-  Serial.print(mac[5],HEX);
-  Serial.print(":");
-  Serial.print(mac[4],HEX);
-  Serial.print(":");
-  Serial.print(mac[3],HEX);
-  Serial.print(":");
-  Serial.print(mac[2],HEX);
-  Serial.print(":");
-  Serial.print(mac[1],HEX);
-  Serial.print(":");
-  Serial.println(mac[0],HEX);
+  Serial.println(address);
 }
 
 void loop () {}
