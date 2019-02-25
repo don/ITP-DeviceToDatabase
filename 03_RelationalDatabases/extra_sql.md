@@ -1,4 +1,4 @@
-Addition SQL Examples using the `itp` database
+Addition SQL examples using the `itp` database
 
     psql -h d2d.clhpc43azszs.us-east-2.rds.amazonaws.com -U xx
     \c itp
