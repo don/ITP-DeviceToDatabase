@@ -4,7 +4,7 @@
 
 ## Client
 
-We use the Postgres `psql` command line tool to connect to TimescaleDB. You can install `psql` on a Mac with Homebrew.
+We use the Postgres `psql` command line tool to connect to TimescaleDB. You can install `psql` on a Mac with Homebrew. You should already have Postgres installed from last week. If not, install it with:
 
     brew install posgres
 
@@ -16,26 +16,23 @@ Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreS
 
     psql -h timescale.iotwork.shop -U xx 
 
-
 ## Hypertables
 
 Once the extension is installed we can create Postgres table and convert it to a TimescaleDB hypertable. Hypertables are stored differently and more efficiently for time series, but most of it is transparent to us. For the most part it look like a regular table.
 
-## Data Model Differences
-
-No Primary Key
+**These are the steps used to create the tables in tsfarm. You don't need to recreate the tables. This section is for information only.**
 
 Create a new timescaledb farm database
 
     CREATE DATABASE tsfarm;
     \c tsfarm
 
-Create a table for farm dataset.
+Create a table for farm dataset. Note that the `id` column has been removed.
 
     CREATE TABLE sensor_data (
         device VARCHAR(50),      
         measurement VARCHAR(50),
-        reading DOUBLE
+        reading DOUBLE PRECISION,
         recorded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -61,9 +58,17 @@ The TimescaleDB website has some great documentation about [Advanced Analytic Qu
 
 The `time_bucket` function allows us to group data into time intervals. Previous with Postgres we used `extract` for this.
 
+Connect
+
+    psql -h timescale.iotwork.shop -U xx 
+
 Set the timezone
 
     set timezone="EST";
+
+Switch to the farm database
+
+    \c tsfarm
 
 Daily summary for the office for December 2018
 
@@ -74,7 +79,7 @@ Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct
             round(avg(reading)::numeric, 2) as avg
         FROM sensor_data
         WHERE recorded_at BETWEEN '2018-12-01' and '2018-12-31'
-        AND device IN ('office')
+        AND device = 'office'
         AND measurement = 'temperature'
         GROUP BY one_day, device
         ORDER BY one_day;
