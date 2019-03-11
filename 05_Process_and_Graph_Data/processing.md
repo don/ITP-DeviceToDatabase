@@ -250,6 +250,14 @@ Copy the `insertRow` function from `insert-test.js` into this file.
         }
     }
 
+Run the code
+
+    node mqtt-to-timescale
+
+Query the database to ensure new records are being inserted
+
+    SELECT * FROM sensor_data ORDER BY recorded_at desc;
+
 # High Temperature Alert
 
 Create a new file `temperature-alert.js`. Require the mqtt library and create a connection to the MQTT server.
