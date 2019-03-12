@@ -199,7 +199,7 @@ The `drawChart` function sets up and renders the chart using Google Chart APIs.
     // Draw the chart
     function drawChart(rows) {
         var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date');
+        data.addColumn('datetime', 'Date');
         data.addColumn('number', 'Temperature');
         data.addRows(rows);
 
