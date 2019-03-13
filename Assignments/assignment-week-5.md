@@ -24,4 +24,4 @@ Document the project on your blog (or send your solution via email.) Include eno
  * Screenshot of the visualization
  * Explanation of what you built
  
-Assignment is due before class on **March 18th**.
+Assignment is due before class on ~~**March 18th**~~ **March 25th**.
