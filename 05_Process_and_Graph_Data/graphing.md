@@ -40,6 +40,10 @@ Create a file name `.env` to store the TimescaleDB connection information. Repla
 
 ## PostgreSQL
 
+Install the PostgreSQL driver
+
+    npm install pg
+
 Add the postgres configuration info to the top of `server.js`.
 
     const { Pool } = require('pg');
