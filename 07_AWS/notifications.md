@@ -55,3 +55,4 @@ You should receive an email and a text message.
 
 For fancier notification emails, look into [AWS Simple Email Service (SES)](https://aws.amazon.com/ses/).
 
+Next [Logging](logging.md)

@@ -1,6 +1,6 @@
  * [AWS IoT](aws.md)
- * [Notification](notification.md)
+ * [Notifications](notifications.md)
  * [Logging](logging.md)
- * [Dynamo](dynamo.md)
+ * [DynamoDB](dynamo.md)
 
-![diagram showing system with Arduino and AWS](img/aws.png)
+![diagram showing system with Arduino and AWS Overview of system](img/aws.png)

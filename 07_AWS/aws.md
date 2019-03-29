@@ -71,7 +71,7 @@ In order to connect the Arduino to AWS IoT Core, our device needs a client certi
 
 Load [ECCX08CSR.ino](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/arduino/ECCX08CSR/ECCX08CSR.ino) on your MRK 1000 or MRK WiFi 1010.
 
-Open the Serial Monitor and generate a CSR. You can use all the default values. The common name is pre-populated with the serial number of the ECCX08. You can use this default or create a new name like **device**. Refer to the [week 2 instructions](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/exercises/exercise7.md) if you need more details.
+Open the Serial Monitor and generate a CSR. You can use all the default values. The common name is pre-populated with the serial number of the ECCX08. You can use this default or create your own name. Refer to the [week 2 instructions](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/exercises/exercise7.md) if you need more details.
 
 ![Screenshot of Arduino sketch generating CSR](../02_Arduino_MQTT/exercises/images/eccx08-csr.png)
 
@@ -344,8 +344,5 @@ Log into your local Grafana server. Add a connection to your RDS database. Creat
 ![](img/grafana-query.png)
 ![](img/grafana-graph.png)
 
+Next [Notifications](notifications.md) 
 
-# Additional Examples
- * https://create.arduino.cc/projecthub/Arduino_Genuino/securely-connecting-an-arduino-mkr-wifi-1010-to-aws-iot-core-a9f365
- * https://create.arduino.cc/projecthub/Arduino_Genuino/securely-connecting-an-arduino-nb-1500-to-azure-iot-hub-af6470
- * https://create.arduino.cc/projecthub/Arduino_Genuino/securely-connecting-a-mkr-gsm-1400-to-google-cloud-iot-core-b8b628

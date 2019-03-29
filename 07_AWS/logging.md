@@ -67,3 +67,5 @@ The new log messages look better
     {"topic":"things/01237F2B0D8A1817EE/environment","clientId":"01237F2B0D8A1817EE","timestamp":1553804980375,"payload":{"temperature":73.76,"humidity":32.4}}
 
 Now that the log is working, go into Firehose job and increase the buffer interval from 120 seconds to 300 or 900 seconds.  
+
+Next [DynamoDB](dynamo.md)
