@@ -202,7 +202,7 @@ Disconnect from psql using `\q`
 
 Reconnect to the sensors database as user aws
 
-    psql -h itp-d2d.cdgh6zvbol40.us-east-1.rds.amazonaws.com -U aws sensors
+    psql -h itp-d2d.cdgh6zvblo40.us-east-1.rds.amazonaws.com -U aws sensors
 
 Create the environment table to hold data from our sensors
 
