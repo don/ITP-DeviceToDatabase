@@ -2,13 +2,36 @@
 
 Use AWS to collect and store data from Arduino.
 
+## IAM User
+
+Log into the [AWS Console](http://aws.amazon.com). Open the Identity and Access Managment Service (IAM). Click on the [Users tab](https://console.aws.amazon.com/iam/home#/users) and press the *Add user* button.
+
+![Screenshot of AWS IAM dashboard](img/iam-users.png)
+
+Create a new user. I chose the name `cli` since we're using this user with the Command Line Interface (CLI). Be sure to check the *Programmatic access* option before pressing the *Next* button.
+
+![Screenshot of AWS IAM create new user](img/iam-new-user.png)
+
+Attach the *Administrative Access* policy to this user.
+
+![Screenshot of AWS IAM new user permissions](img/iam-permissions.png)
+
+Review the settings and create the user.
+
+![Screenshot of AWS IAM screen to review new user settings](img/iam-review.png)
+
+Download the credentials CSV file with the access key ID and and secret access key.
+
+![Screenshot of AWS IAM credentials download for new user](img/iam-credentials.png)
+
+
 ## AWS CLI
 
 Install the AWS Command Line Interface (CLI) using [Homebrew](https://brew.sh) or refer to [Amazon's instructions](https://docs.aws.amazon.com/cli/latest/userguide/install-macos.html) for alternate installation methods.
 
     brew install awscli
 
-Once you install the `awscli`, it needs to be configured with your Access Key ID and Secret Access Key. Be sure to choose `us-east-1` as the default region. See the [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) for more details about access key ids and secrets.
+Once you install the `awscli`, it needs to be configured with your Access Key ID and Secret Access Key that were downloaded in the previous step. Be sure to choose `us-east-1` as the default region. See the [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) for more details about access key ids and secrets.
 
     $ aws configure
     AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
@@ -18,24 +41,15 @@ Once you install the `awscli`, it needs to be configured with your Access Key ID
 
 ## Policy
 
-Open the [AWS IoT Core](https://console.aws.amazon.com/iot/home?region=us-east-1) console in your web browser. 
+AWS uses IoT policies to give things permission to access AWS IoT resources. Policies can be created using the [AWS IoT website](https://console.aws.amazon.com/iot/home?region=us-east-1#/policyhub), but it's rather cumbersome. We'll use a CloudFormation template to create the policy for us. Download [thing-policy.yaml](thing-policy.yaml). Open a terminal and run this aws command from the same directory as thing-policy.yml.
 
-![Screenshot of AWS IoT console](img/aws-iot-console.png)
+    aws cloudformation create-stack --template-body file://thing-policy.yaml --stack-name thing-policy
 
-AWS uses IoT policies to give things permission to access AWS IoT resources. Create a new policy. On the left menu, choose Secure -> Policies and press the `Create a Policy` button.
+Open the [AWS IoT Core Policy screen](https://console.aws.amazon.com/iot/home?region=us-east-1#/policyhub) in your web browser. You should see the ThingPolicy that was created by AWS Cloud Formation.
 
-![Screenshot of AWS IoT console showing the policy menu on the left](img/aws-iot-policy-menu.png)
+![Screenshot of AWS IoT Policy screen](img/cloudformation-thing-policy.png)
 
-Enter `ThingPolicy` for the name and allow the following policy actions. 
-
-    iot:Connect - client/${iot:Certificate.Subject.CommonName}
-    iot:Publish, iot:Receive - topic/things/${iot:ClientId}/*
-    iot:Subscribe - topicfilter/things/${iot:ClientId}/*
-
-![](img/aws-iot-thing-policy-1.png)
-![](img/aws-iot-thing-policy-2.png)
-
-Your policy should look something like this, but with different arns.
+This new policy ensures that when a device connects, the client id of the device matches the Common Name in the certificate. The policy also restricts the topics that a device can use. The device can only publish or subscribe to the topic that begin with `things/${clientId}/`. Clicking on the policy will show you details of the policy document. Your policy should look something like this, but with different arns.
 
     {
         "Version": "2012-10-17",
@@ -60,8 +74,32 @@ Your policy should look something like this, but with different arns.
             }
         ]
     }
-    
-This policy ensures that when a device connects, the client id of the device matches the Common Name in the certificate. The policy also restricts the topics that a device can use. To publish or subscribe to the topic must begin with `things/${clientId}/`.
+
+### Manually creating a policy
+
+This section is for information only, if you used Cloud Formation to create the policy, skip ahead to [the next section](#arduino).
+
+To manually create a policy, open the [AWS IoT Core](https://console.aws.amazon.com/iot/home?region=us-east-1) console in your web browser. 
+
+![Screenshot of AWS IoT console](img/aws-iot-console.png)
+
+AWS uses IoT policies to give things permission to access AWS IoT resources. Create a new policy. On the left menu, choose Secure -> Policies and press the `Create a Policy` button.
+
+![Screenshot of AWS IoT console showing the policy menu on the left](img/aws-iot-policy-menu.png)
+
+Enter `ThingPolicy` for the name and allow the following policy actions. Let the web page pre-populate the beginning of the ARN including the ACCOUNT_ID.
+
+    Action: iot:Connect 
+    Resource: arn:aws:iot:us-east-1:ACCOUNT_ID:client/${iot:Certificate.Subject.CommonName}
+
+    Action: iot:Publish, iot:Receive
+    Resource: arn:aws:iot:us-east-1:ACCOUNT_ID:topic/things/${iot:ClientId}/*
+
+    Action:iot:Subscribe
+    Resource: arn:aws:iot:us-east-1:ACCOUNT_ID:topicfilter/things/${iot:ClientId}/*
+
+![](img/aws-iot-thing-policy-1.png)
+![](img/aws-iot-thing-policy-2.png)
 
 ## Arduino
 
@@ -102,6 +140,7 @@ From the [Manage -> Things](https://console.aws.amazon.com/iot/home?region=us-ea
  * Click the Security menu on the left
  * Click the Certificate to show the details
  * Use the Action menu to Download the certificate
+ * You will need to paste this certificate into config.h in the next step
 
 ![Screenshot of page for downloading the device certificate](img/aws-iot-download-certificate.png)
 
@@ -111,7 +150,7 @@ Use the `aws` command line tool to get the AWS IoT MQTT broker URL.
 
     aws iot describe-endpoint --endpoint-type "iot:Data-ATS"
 
-Using the MQTT broker URL and downloaded device certificate file, configure [AWS.ino](../02_Arduino_MQTT/arduino/AWS/AWS.ino) sketch and load it onto your Arduino. Review the [instructions from week 2](/02_Arduino_MQTT/exercises/exercise7.md#awsino) if necessary.
+Using the MQTT broker URL and device certificate you downloaded from AWS, configure [AWS.ino](../02_Arduino_MQTT/arduino/AWS/AWS.ino) sketch and load it onto your Arduino. Make sure you use the certificate and not the CSR. Review the [instructions from week 2](/02_Arduino_MQTT/exercises/exercise7.md#awsino) if necessary.
 
 Open the Arduino Serial Monitor and verify that your device has connected to the wireless network and to AWS.
 
@@ -278,11 +317,20 @@ Save the file and run `npm run zip` to generate a zip file for AWS Lambda.
 
 ### Create the Lambda function
 
-Use the Services menu at the top of the AWS console to navigate to the AWS Lambda page. Create a new function named `storeSensorData`. Change the "code entry type" from "edit code inline" to "Upload a .zip file". Click the upload button and choose lambda.zip. Hit Save on the top right.
+Use the Services menu at the top of the AWS console to navigate to the AWS Lambda page. 
 
 ![](img/lambda-home.png)
+
+Create a new function named `storeSensorData`. Let AWS create a new role with basic Lambda permissions.
+
 ![](img/lambda-create.png)
+
+Change the *code entry type* from *edit code inline* to *Upload a .zip file*. 
+
 ![](img/lambda-create-success.png)
+
+Click the upload button and choose lambda.zip. Hit Save on the top right.
+
 ![](img/lambda-upload-zip.png)
 
 Scroll down to the Environment Variables section. Create a new variable CONNECTION_STRING with your PostgreSQL connection information. Make sure you adjust the URL for your RDS connection.
@@ -295,7 +343,7 @@ Press the save button in the top right.
 
 #### Testing
 
-Use the "Select a test event" combo box and select "Configure test events". Create an event named `TestSensorData`. The event object should have device, temperature, and humidity. Click create.
+Use the *Select a test event* combo box and select *Configure test events*. Create an event named `TestSensorData`. The event object should have device, temperature, and humidity. Click create.
 
 ![](img/lambda-test-event.png)
 
@@ -317,7 +365,11 @@ Name the rule `environment`
 
 ![](img/rule-create.png)
 
-Add the rule query statement `SELECT topic(2) as device, temperature, humidity FROM 'things/+/environment'`
+Add the *rule query statement*.
+
+    SELECT topic(2) as device, temperature, humidity FROM 'things/+/environment'
+    
+The `topic(2)` field gets the 2nd element from the MQTT topic, which in this case, is the device name. See the [AWS IoT SQL Reference](https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html) for more details.
 
 ![](img/rule-query.png)
 
