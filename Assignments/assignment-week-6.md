@@ -10,7 +10,9 @@ Create a flow using Node-RED. Describe what the flow does. Submit a screenshot o
 
 ## AWS
 
-Set up an AWS [student](https://aws.amazon.com/education/awseducate/) or free [developer](https://aws.amazon.com/free/) account to use in the next class. You might need a credit card to sign up, but we'll be using the free tier so you shouldn't accrue any charges.
+Set up an AWS ~~student or~~ free [developer](https://aws.amazon.com/free/) account to use in the next class. You might need a credit card to sign up, but we'll be using the free tier so you shouldn't accrue any charges.
+
+NOTE: Unfortunately the AWS Educate account will not work.
 
 ## Arduino
 
