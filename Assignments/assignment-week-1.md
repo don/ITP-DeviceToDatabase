@@ -4,16 +4,22 @@
  * Read [IoT: MQTT outperforms 300% over HTTP](https://medium.com/@dearsikandarkhan/mqtt-outperforms-300-over-http-6e2c5d40c603)
  * Watch [Introduction to MQTT](https://www.youtube.com/watch?v=LKz1jYngpcU)
 
-## Hardware 
+# Hardware
 
-For the February 4th class bring:
- * Arduino MKR1000 or MKR WiFi 1010
- * Solderless breadboard
- * Jumper wires
- * DHT-22 or DHT-11 temperature and humidity sensor
- * USB cable
- * Laptop
+I will be handing out Arduino MKR 1010 boards and the MKR ENV shield that you can use for the duration of the class. Please bring the following
 
-If you don't have a DHT-22 or DHT-11, you can other sensors like SHT31-D, BME280, Si7021, etc. You will need to modify the example code to work with your sensor. I'll bring a few extra sensors that people can borrow during class.
+ * micro usb cable
+ * solderless breadboard
+ * led and resistor
+ * jumper wire
+ 
+ # Software
+ 
+ Install the following software on your computer
 
-I recommend that you borrow an Arduino MKR1000 board from the ER. If you email Rob Ryan, you should be able keep the hardware for the duration of the class.
+  * [Arduino IDE](https://www.arduino.cc/en/Main/Software#download) version 1.8.11 (or 1.8.10)
+  * [Arduino SAMD Core](https://www.arduino.cc/en/Guide/MKRWiFi1010#toc2) for the Arduino IDE
+  * Node.js version 10 or higher
+    * brew install node
+    * *or* download from [nodejs.org](https://nodejs.org)
+ * A text editor ([Visual Studio Code](https://code.visualstudio.com), [Sublime](https://www.sublimetext.com), or your favorite editor)
