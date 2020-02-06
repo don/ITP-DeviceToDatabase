@@ -10,4 +10,4 @@ Complete the Arduino exercises through [Exercise 3: Sending Data with HTTP](http
 
 ## Hardware
 
-Bring your MKR 1010 hardware to class on February 12th. We'll be using the MKR 1010 and ENV shield to send data using MQTT.
+Bring your MKR 1010 hardware to class on February 13th. We'll be using the MKR 1010 and ENV shield to send data using MQTT.
