@@ -67,7 +67,7 @@ You can view collected data using a web browser http://localhost:3000 or by view
 
 ## Curl
 
-Since the server accepts data via a HTTP post, you can use tools like curl to send data to your server. This is useful for testing your server (or sending data to your neighbors server.)
+Since the server accepts data via a HTTP post, you can use tools like curl to send data to your server. This is useful for testing your server (or sending data to your neighbors server.) Replace 10.0.1.2 with the IP address of your server.
 
     curl -X POST -d message=hello -d name=world 10.0.1.2:3000
 

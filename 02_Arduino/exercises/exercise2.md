@@ -44,4 +44,4 @@ In order to join the `itpsandbox` wireless network, the MAC address of the devic
 
 ![Arduino serial monitor with network test results](images/network-test.png)
 
-Next [Exercise 3: Sending data using MQTT](exercise3.md)
+Next [Exercise 3: Sending data using HTTP](exercise3.md)
