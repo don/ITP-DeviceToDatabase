@@ -1,0 +1,13 @@
+{
+  "name": "iot-data",
+  "version": "0.0.1",
+  "description": "An express server that accepts IoT data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "",
+    "express-basic-auth": ""
+  }
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.387.0/aws-sdk.js"></script>
+    <title>IoT Workshop</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 70px;
+        }
+        h3 { 
+            text-align: center 
+        }
+    </style>
+  </head>
+  <body>
+    <form>
+      <fieldset>
+          <legend>MQTT</legend>
+          <div>
+              <label for="username">Username</label>
+              <input type=text name=username id=username />
+          </div>
+          <div>
+              <label for="password">Password</label>
+              <input type=password name=password id=password />
+          </div>
+          <div>
+              <label for="device">Device Id</label>
+              <input type=text name=deviceId id=deviceId value=device_XX />
+          </div>
+          <div>
+              <button id=connectButton onclick="event.preventDefault(); connect(); return false;">Connect</button>
+              <button id=disconnectButton onclick="event.preventDefault(); disconnect(); return false;" hidden=true>Disconnect</button>
+          </div>
+      </fieldset>
+  </form>
+    <canvas id="temperatureCanvas" height="70"></canvas>
+    <canvas id="humidityCanvas" height="70"></canvas>
+    <script src="chart.js"></script>
+    <script src="mqtt.js"></script>
+  </body>
+</html>
