@@ -15,12 +15,11 @@ Measure the following measurements from the MKR ENV shield
 | uva           | μW/cm2        |
 | uvb           | μW/cm2        |
 
-Additionally measure the soil moisture using the provided capacitive moisture sensor. The soil sensor provides an analog value. (We'll need to figure out how to interpret the value once we've collected some data.) See (https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/SoilSensorAnalogRead/SoilSensorAnalogRead.ino)[SoilSensorAnalogRead] for an example of reading data from the sensor.
+Additionally measure the soil moisture using the provided capacitive moisture sensor. The soil sensor provides an analog value. (We'll need to figure out how to interpret the value once we've collected some data.) See [SoilSensorAnalogRead](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/SoilSensorAnalogRead/SoilSensorAnalogRead.ino) for an example of reading data from the sensor. Write the soil measurement to *itp/${device_id}/soil*.
 
-The LED on your MKR 1010 should be controlled by listening to the *itp/${device_id}/led* topic.
+The LED on your MKR 1010 should be controlled by listening to the *itp/${device_id}/led* topic. Messages can be "on", "off", or a brightness value between 0 and 100.
 
-The 
-(https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/TemperatureHumidityLED/TemperatureHumidityLED.ino)[TemperatureHumidityLED] sketch probably makes a good starting point for your project. The example code sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? Should all the data be sent at the same interval?
+The [TemperatureHumidityLED](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/TemperatureHumidityLED/TemperatureHumidityLED.ino) sketch probably makes a good starting point for your project. The example code sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? Should all the data be sent at the same interval?
 
 Send your data to the MQTT broker we used in class `itpdtd.com`. Send the data to individal topics for each sensor e.g. *itp/${deviceId}/temperature*. Use the measurement names in the table above to create the topics. 
 
