@@ -15,13 +15,14 @@ Measure the following measurements from the MKR ENV shield
 | uva           | μW/cm2        |
 | uvb           | μW/cm2        |
 
-Additionally measure soil moisture moisture using the provided capacitive moisture sensor. The soils sensor provides an analog value that we'll need to figure out how to interpret.
+Additionally measure the soil moisture using the provided capacitive moisture sensor. The soils sensor provides an analog value that we'll need to figure out how to interpret.
 
-Send your data to the MQTT broker we used in class `itpdtd.com`.
+Allow the LED to be controlled itp/${device_id}/topic
 
-The example code from class sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? Should all the data be sent at the same interval?
+The 
+(https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/TemperatureHumidityLED/TemperatureHumidityLED.ino)[TemperatureHumidityLED] sketch probably makes a good starting point for your project. The example code sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? Should all the data be sent at the same interval?
 
-Where should the data be sent? Do you want individal topics for each sensor e.g. *itp/${deviceId}/temperature* or should all the data be sent to *itp/${deviceId}/environment* as JSON? Document the topic names and what data you are publishing.
+Send your data to the MQTT broker we used in class `itpdtd.com`. Send the data to individal topics for each sensor e.g. *itp/${deviceId}/temperature*. Use the measurement names in the table above to create the topics. 
 
 Once your sensor is deployed, ensure that it's sending data and the MQTT broker is receiving data. You can use the [subscribe example](../02_Arduino/www/subscribe/), [chart example](../02_Arduino/www/chart/), or any other MQTT client.
 
@@ -35,6 +36,7 @@ Take photos of the sensor, the plant, and how the sensor is installed.
 
 Submit via email by **February 19th**, 11:59 PM EST
  * link to your blog post
+ * source code (if not in the blog post)
  * details about the location of the plant and sensor if they're not included in the blog post
 
 
