@@ -15,9 +15,9 @@ Measure the following measurements from the MKR ENV shield
 | uva           | μW/cm2        |
 | uvb           | μW/cm2        |
 
-Additionally measure the soil moisture using the provided capacitive moisture sensor. The soils sensor provides an analog value that we'll need to figure out how to interpret.
+Additionally measure the soil moisture using the provided capacitive moisture sensor. The soil sensor provides an analog value. (We'll need to figure out how to interpret the value once we've collected some data.) See (https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/SoilSensorAnalogRead/SoilSensorAnalogRead.ino)[SoilSensorAnalogRead] for an example of reading data from the sensor.
 
-Allow the LED to be controlled itp/${device_id}/topic
+The LED on your MKR 1010 should be controlled by listening to the *itp/${device_id}/led* topic.
 
 The 
 (https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/arduino/TemperatureHumidityLED/TemperatureHumidityLED.ino)[TemperatureHumidityLED] sketch probably makes a good starting point for your project. The example code sends data every 10 seconds. This is probably too often. What interval makes sense for the data you're sending? Should all the data be sent at the same interval?
@@ -38,7 +38,6 @@ Submit via email by **February 19th**, 11:59 PM EST
  * link to your blog post
  * source code (if not in the blog post)
  * details about the location of the plant and sensor if they're not included in the blog post
-
 
 ### Optional
 
