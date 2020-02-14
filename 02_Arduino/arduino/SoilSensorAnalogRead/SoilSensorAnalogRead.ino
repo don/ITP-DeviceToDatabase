@@ -1,5 +1,8 @@
 // Capactive Soil Sensor Test
-// Attach sensor to pin A0
+//
+// Attach yellow wire on sensor to pin A0
+// Put 3.3 volts to red wire from VCC pin
+// Black wire goes to ground
 
 void setup() {
   Serial.begin(9600);
