@@ -57,9 +57,9 @@ We're going to start by connecting with `psql`. You can install psql on your com
 
 The easiest way to install the psql command line tools on a Mac is to use the Homebrew package manager. Install Homebrew by following the directions at https://brew.sh. Then install Postgres with:
 
-    brew install posgres
+    brew install postgresql
 
-We are only using the command line tools. You do **not** need to start the posgresql service.
+We are only using the command line tools. You do **not** need to start the postgresql service.
 
 #### Windows
 
