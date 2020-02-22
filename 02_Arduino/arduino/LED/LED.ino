@@ -70,13 +70,14 @@ void connectWiFi() {
 }
 
 void connectMQTT() {
-  Serial.print("Connecting MQTT...");
+  Serial.print("Connecting MQTT broker ");
+  Serial.println(MQTT_BROKER);
   mqtt.setId(DEVICE_ID);
   mqtt.setUsernamePassword(MQTT_USER, MQTT_PASSWORD);
 
   while (!mqtt.connect(MQTT_BROKER, MQTT_PORT)) {
     Serial.print("Connection error ");
-    Serial.println(mqttClient.connectError());
+    Serial.println(mqtt.connectError());
     Serial.println("Waiting 5 seconds before retrying");
     delay(5000);
     // check the wifi before looping again
