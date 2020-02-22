@@ -110,8 +110,14 @@ void connectMQTT() {
   mqtt.setUsernamePassword(MQTT_USER, MQTT_PASSWORD);
 
   while (!mqtt.connect(MQTT_BROKER, MQTT_PORT)) {
-    Serial.print(".");
+    Serial.print("Connection error ");
+    Serial.println(mqttClient.connectError());
+    Serial.println("Waiting 5 seconds before retrying");
     delay(5000);
+    // check the wifi before looping again
+    if (WiFi.status() != WL_CONNECTED) {
+      connectWiFi();
+    }
   }
 
   mqtt.subscribe(ledTopic);

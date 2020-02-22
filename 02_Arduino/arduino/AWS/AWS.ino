@@ -108,11 +108,15 @@ void connectMQTT() {
   Serial.println(" ");
 
   while (!mqttClient.connect(MQTT_BROKER, 8883)) {
-    // failed, retry
-    Serial.print(".");
+    Serial.print("Connection error ");
+    Serial.println(mqttClient.connectError());
+    Serial.println("Waiting 5 seconds before retrying");
     delay(5000);
+    // check the wifi before looping again
+    if (WiFi.status() != WL_CONNECTED) {
+      connectWiFi();
+    }
   }
-  Serial.println();
 
   Serial.println("You're connected to the MQTT broker");
   Serial.println();
