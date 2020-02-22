@@ -13,7 +13,7 @@ Refine your Plant Sensor Arduino code from the [last assignment](assignment-week
 
 1) Practice writing SQL queries against the `itp` and `farm` databases.
 
-2) Use the `farm` database. Write queries to answer the following questions:
+2) Use the `farm` PostgreSQL database. Write queries to answer the following questions:
 
    a. When did the outside sensor break and stop sending data? <br/>
    b. Show the min and max temperature in the root cellar by year <br/>
