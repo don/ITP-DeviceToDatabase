@@ -1,6 +1,13 @@
 # Assignment - Week 5
 
+## Assignment: Code
+
+Finish all the exercises from [Graphing TimescaleDB Data with Google Charts](https://github.com/don/ITP-DeviceToDatabase/blob/master/05_Code/graphing-data.md).
+
+Optional: Add a new chart to your server
+
 ## Assignment: Hardware
+
 Keep your Arduino plant sensor running adn sending data to MQTT so we continue to collect data. It's fine to update or modify your hardware and code to get better data. If you have problems with your hardware, please contact me.
 
 ## Assignment: SQL
