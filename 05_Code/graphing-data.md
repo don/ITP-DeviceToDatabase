@@ -52,7 +52,7 @@ Install the PostgreSQL driver
 
     npm install pg
 
-Add the postgres configuration info to the top of `server.js`.
+Add the postgres configuration near the top of `server.js` after `require('dotenv').config();` 
 
     const { Pool } = require('pg');
 
@@ -146,7 +146,7 @@ Restart your server and test that your index.html file is being served.
 
 Restarting the server after each change can be tedious. We can use `pm2-dev` to watch for changes to our project and automatically restart the server. Use Control + C to stop the server. Install pm2, then restart the server. 
 
-    npm install -g pm2
+    sudo npm install -g pm2
     pm2-dev server.js
 
 ## index.html and chart.js
