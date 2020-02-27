@@ -14,8 +14,7 @@ Keep your Arduino plant sensor running adn sending data to MQTT so we continue t
 3) Find the min and max temperatures by week for the root cellar for the last 3 months of 2018. 
   - Use InfluxDB and the `farm` database. Hint: use `group by time(interval)`
   - Use TimescaleDB and the `tsfarm` database. Hint: use the `time_bucket` function
-
-Explain the differences between the InfluxDB and TimescaleDB and query results.
+  - Explain the differences between the InfluxDB and TimescaleDB and query results.
 
 4) Write two queries that use data from your sensor data from InfluxDB.
 
