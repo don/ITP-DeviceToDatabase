@@ -19,18 +19,20 @@
 
 We are going to create a Node.js project with code to read and process data from MQTT topics.
 
-Open a `Terminal.app` and create new directory for this project
+Open `Terminal.app` on Mac, or PowerShell on Windows and create new directory for this project
 
-    mkdir dtd-process-mqtt
-    cd dtd-process-mqtt
+    mkdir process-mqtt-data
+    cd process-mqtt-data
 
-Use npm to initialize the project
+Use `npm` to initialize the project
 
     npm init -y
 
 Install the mqtt and dotenv libraries
 
     npm install mqtt dotenv
+
+Open the `process-mqtt-data` directory in Visual Studio Code, Sublime, or your preferred text editor.
 
 ## Environment
 
@@ -74,7 +76,7 @@ Windows
 
     copy mqtt-test.js mqtt-logger.js
 
-Open `mqtt-logger.js` in your editor. Near the top of the file, require `fs` and create a file name.
+Open `mqtt-logger.js` in your editor. After the require('dotenv') line add the following code to, require `fs` and create a variable to hold the file name of the log file.
 
     const fs = require('fs');
     const fileName = './mqtt.log';
@@ -99,7 +101,7 @@ Open a 2nd terminal window and tail the MQTT log to ensure data is being written
 
 Windows users should use PowerShell
 
-    GetContent mqtt.log -Wait
+    Get-Content mqtt.log -Wait
 
 Note that the logger will fail if your MQTT message contains tabs or linefeeds. (This might happen with JSON payloads.) You can add additional code to handle edge cases. Be sure to use payload instead of message when creating the data string.
 
@@ -152,6 +154,12 @@ In your project directory, create a new folder named `migrations`. In the migrat
 
     DROP TABLE sensor_data;
 
+Your directory structure should look like this:
+
+![screenshot of the directory structure](img/process-mqtt-directory-structure-migrations.png)
+
+Use `CMD + SHIFT + .` to show hidden files in Finder.  Follow these instuctions to [view hidden files on Windows 10](https://support.microsoft.com/en-us/help/4028316/windows-view-hidden-files-and-folders-in-windows-10).
+
 ## Inserting records with Node.js
 
 Create a new file `insert-test.js`. This is a simple program to make sure we can insert data into the database from node.
@@ -163,10 +171,12 @@ Create a function insertRow, that inserts the data into the database. The query 
 
     async function insertRow(device, measurement, reading) {
         try {
+            const query = 'INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)';
             const db = await sqlite.open(database, { cached: true });
-            const query = 'INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)';    
+            console.log(query);
+            console.log(device, measurement, reading);    
             const result = await db.run(query, [device, measurement, reading]);
-            console.log(result);
+            console.log('Inserted ROWID', result.lastID);
         } catch(err) {
             console.error(err.stack)
         }
@@ -215,7 +225,7 @@ Include the MQTT and SQLite libraries. Set up the connections.
     const mqtt = require('mqtt');
     const sqlite = require('sqlite');
 
-    const database = './demo.db'
+    const database = './example.db'
     const query = 'INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)';
 
     const mqttClient = mqtt.connect(process.env.MQTT_SERVER);
@@ -264,6 +274,10 @@ Run the code
 
     node mqtt-to-sqlite
 
+Open the database
+
+    sqlite3 example.db
+
 Query the database to ensure new records are being inserted
 
     SELECT * FROM sensor_data ORDER BY recorded_at desc;
@@ -298,8 +312,8 @@ When a message is received, check to see if the value is over the limit and post
         const device = topic.split('/')[1];
         const temperature = Number(message.toString());
 
-        if (temperature > 80) {
-            const alertMessage = `Temperature ${temperature}°F for device '${device}' exceeds the high limit of 80°F`
+        if (temperature > limit) {
+            const alertMessage = `Temperature ${temperature}°F for device '${device}' exceeds the high limit of ${limit}°F`
             mqttClient.publish(`sms/send/${phoneNumber}`, alertMessage);
         }
     });
@@ -312,15 +326,16 @@ While this code is running it will post messages to the alert topic for your dev
 
 ## Test Data
 
-We can test this by sending some fake data to `test/name/temperature`. Create a new file `publish.js` to publish some data to your topic. 
+We can test this by sending some fake data to `test/device_XX/temperature`. Create a new file `publish.js` to publish some data to your topic. 
 
     require('dotenv').config();
     const mqtt = require('mqtt');
     const mqttClient = mqtt.connect(process.env.MQTT_SERVER);
+    const temperature = process.argv[2] || '120';
 
     mqttClient.on('connect', () => {
         console.log('MQTT Connected');
-        mqttClient.publish('test/name/temperature', 120);
+        mqttClient.publish('test/device_XX/temperature', temperature);
         console.log('Sent message');
         mqttClient.end();
     });    
