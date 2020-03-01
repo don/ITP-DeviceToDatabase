@@ -12,7 +12,7 @@ Create a flow using Node-RED. Write a blog post. Describe what the flow does. In
 
 Bring your Arduino 1010 to class on March 12th. We will be connecting the Arduino to AWS.
 
-Submit via email by March 11th, 11:59 PM EST
+**Submit via email by March 11th, 11:59 PM EST**
  * Link to Grafana blog post
  * Link to Node-RED blog post
 
