@@ -2,7 +2,7 @@
 
 ## Grafana
 
-Use Grafana to create a dashboard with data from InfluxDB and/or TimescaleDB. Write a blog post. Include an explanation of what you built along with screenshots of the graphs and the queries used to build them. 
+Use Grafana to create a dashboard with data from InfluxDB and/or TimescaleDB. Write a blog post. Include an explanation of what you built along with screenshots of the graphs and the queries used to build them. You can use the [Grafana instance from class](https://grafana.itpdtd.com) or a version installed on your laptop.
 
 ## Node-RED
 
