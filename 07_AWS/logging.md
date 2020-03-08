@@ -28,7 +28,7 @@ Set S3 as the destination.
 
 ![](img/log-kinesis-s3-destination.png)
 
-Create a new S3 bucket. S3 bucket names must be globally unique. Suggested naming convention itp-mqtt-log-xx.
+Create a new S3 bucket. S3 bucket names must be globally unique. Try `itp-mqtt-log-{YOUR_NAME}`.
 
 ![](img/log-kinesis-s3-bucket.png)
 
@@ -40,11 +40,11 @@ Choose firehose delivery AIM role.
 
 ![](img/log-kinesis-role.png)
 
-Create the delivery stream and then switch back to the AWS IoT rule tab. Refresh the stream names and choose the `mqtt-log` stream. Set the separator to newline.  Create a new role, MqttLogRole and press the add action button.
+Create the delivery stream and then switch back to the AWS IoT rule tab. Refresh the stream names and choose the `mqtt-log` stream. Set the separator to newline.  Create a new role `MqttLogRole` and press the "Add action" button.
 
 ![](img/log-action.png)
 
-Press the Create rule button to finish creating the rule.
+Press the "Create rule" button to finish creating the rule.
 
 The rule has been deployed and is collecting data. Wait 120 seconds for Firehose to write a record to the S3 bucket. The log files will be prefixed by year, month, day, and hour. Download a log file to view the contents.
 
@@ -68,4 +68,4 @@ The new log messages look better
 
 Now that the log is working, go into Firehose job and increase the buffer interval from 120 seconds to 300 or 900 seconds.  
 
-Next [DynamoDB](dynamo.md)
+Next [Charts](charts.md)

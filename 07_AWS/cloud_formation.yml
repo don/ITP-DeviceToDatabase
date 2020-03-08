@@ -1,0 +1,479 @@
+AWSTemplateFormatVersion:               "2010-09-09"
+Description:                            "Creates skeleton solution for NYU ITP Device to Database class"
+
+Parameters:
+
+  DynamoTableName:
+    Description:                        "Name of the DynamoDB table"
+    Type:                               "String"
+    Default:                            "environment"
+
+  InfluxLambdaName:
+    Description:                        "Name of the Lamba Function that writes data from MQTT to InfluxDB"
+    Type:                               "String"
+    Default:                            "mqtt-to-influxdb" 
+
+  PostgresLambdaName:
+    Description:                        "Name of the Lamba Function that writes data from MQTT to PostgreSQL"
+    Type:                               "String"
+    Default:                            "mqtt-to-postgresql"
+    
+  RDSInstanceClass:
+    Description:                        "Underlying database compute engine"
+    Type:                               String
+    Default:                            "db.t2.micro"
+    
+  RDSStorageSize:
+    Description:                        "Number of gigabytes to allocate to RDS server"
+    Type:                               String
+    Default:                            "100"
+    
+  RDSMasterUser:
+    Description:                        "The name of the database master user"
+    Type:                               String
+    Default:                            "postgres"
+    
+  RDSMasterPassword:
+    Description:                        "Password for the database master user"
+    Type:                               String
+    Default:                            "postgres-123"
+    
+  RDSMasterDatabase:
+    Description:                        "Default database for the master user"
+    Type:                               String
+    Default:                            "postgres"
+
+  VPCName:
+    Description:                        "A name for the VPC (to differentiate from default VPC)"
+    Type:                               "String"
+    Default:                            "itp"
+
+  BaseCIDR:
+    Description:                        "The first two bytes of a /16 CIDR that will be used for the VPC"
+    Type:                               "String"
+    Default:                            "10.10"
+   
+
+Resources:
+
+  ##
+  ## VPC
+  ##
+
+  VPC:
+    Type:                               "AWS::EC2::VPC"
+    Properties: 
+      CidrBlock:                        !Sub "${BaseCIDR}.0.0/16"
+      EnableDnsSupport:                 true
+      EnableDnsHostnames:               true
+      Tags:
+        - Key:                          Name
+          Value:                        !Sub "${VPCName}"
+
+
+  InternetGateway:
+    Type:                               "AWS::EC2::InternetGateway"
+    Properties: 
+      Tags:
+        - Key:                          Name
+          Value:                        !Sub "${VPCName}"
+
+
+  InternetGatewayAttachment:
+    Type:                               "AWS::EC2::VPCGatewayAttachment"
+    Properties: 
+      VpcId:                            !Ref VPC
+      InternetGatewayId:                !Ref InternetGateway
+
+  ##
+  ## Route tables
+  ##
+
+  PublicRouteTable:
+    Type:                               "AWS::EC2::RouteTable"
+    Properties: 
+      VpcId:                            !Ref VPC
+      Tags: 
+        - Key:                          Name
+          Value:                        !Sub "${VPCName}-public"
+
+
+  PublicRouteTableIGW:
+    Type:                               "AWS::EC2::Route"
+    Properties: 
+      RouteTableId:                     !Ref PublicRouteTable
+      DestinationCidrBlock:             "0.0.0.0/0"
+      GatewayId:                        !Ref InternetGateway
+  
+  ##
+  ## Subnets
+  ##
+
+  PublicSubnet01:
+    Type:                               "AWS::EC2::Subnet"
+    Properties: 
+      VpcId:                            !Ref VPC
+      CidrBlock:                        !Sub "${BaseCIDR}.0.0/20"
+      AvailabilityZone:                 !Sub "${AWS::Region}a"
+      MapPublicIpOnLaunch:              true
+      Tags:
+        - Key:                          Name
+          Value:                        !Sub "${VPCName}-public-a"
+
+
+  PublicSubnet01Routes:
+    Type:                               "AWS::EC2::SubnetRouteTableAssociation"
+    Properties: 
+      SubnetId:                         !Ref PublicSubnet01
+      RouteTableId:                     !Ref PublicRouteTable
+
+
+  PublicSubnet02:
+    Type:                               "AWS::EC2::Subnet"
+    Properties: 
+      VpcId:                            !Ref VPC
+      CidrBlock:                        !Sub "${BaseCIDR}.16.0/20"
+      AvailabilityZone:                 !Sub "${AWS::Region}b"
+      MapPublicIpOnLaunch:              true
+      Tags:
+        - Key:                          Name
+          Value:                        !Sub "${VPCName}-public-b"
+
+
+  PublicSubnet02Routes:
+    Type:                               "AWS::EC2::SubnetRouteTableAssociation"
+    Properties: 
+      SubnetId:                         !Ref PublicSubnet02
+      RouteTableId:                     !Ref PublicRouteTable
+
+  ##
+  ## Security Groups
+  ##
+
+  DatabaseSecurityGroup:
+    Type:                               "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName:                        !Sub "${AWS::StackName}-DatabaseSecurityGroup"
+      GroupDescription:                 "Allows access to the database (nominally from application)"
+      VpcId:                            !Ref VPC
+      SecurityGroupIngress:
+        -
+          Description:                  "Access from Anywhere"
+          IpProtocol:                   "tcp"
+          CidrIp:                       "0.0.0.0/0"
+          FromPort:                     5432
+          ToPort:                       5432
+
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription:           !Sub "${AWS::StackName}-DBSubnetGroup"
+      DBSubnetGroupName:                  !Sub "${AWS::StackName}"
+      SubnetIds: 
+        - !Ref PublicSubnet01
+        - !Ref PublicSubnet02
+
+  ##
+  ## PostgreSQL Database
+  ##
+
+  PostgreSQLDatabaseInstance:
+    Type:                               "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceIdentifier:             !Sub "${AWS::StackName}"
+      Engine:                           "postgres"
+      DBInstanceClass:                  !Ref RDSInstanceClass
+      DBSubnetGroupName:                !Ref DBSubnetGroup
+      AllocatedStorage:                 !Ref RDSStorageSize
+      StorageType:                      "gp2"
+      MasterUsername:                   !Ref RDSMasterUser
+      MasterUserPassword:               !Ref RDSMasterPassword
+      DBName:                           !Ref RDSMasterDatabase
+      PubliclyAccessible:               true
+      VPCSecurityGroups:                [ !Ref DatabaseSecurityGroup ]
+      PreferredMaintenanceWindow:       "Sun:06:00-Sun:06:59"
+      AllowMajorVersionUpgrade:         false
+      AutoMinorVersionUpgrade:          true
+      PreferredBackupWindow:            "05:00-05:30"
+      BackupRetentionPeriod:            7
+      CopyTagsToSnapshot:               true
+
+
+  ##
+  ## Dynamo
+  ##
+
+  DynamoTable:
+    Type:                               "AWS::DynamoDB::Table"
+    Properties:
+      TableName:                        !Ref DynamoTableName
+      AttributeDefinitions:
+        -
+          AttributeName:                "device"
+          AttributeType:                "S"
+        -
+          AttributeName:                "timestamp"
+          AttributeType:                "N"
+      KeySchema:
+        -
+          AttributeName:                "device"
+          KeyType:                      "HASH"
+        -
+          AttributeName:                "timestamp"
+          KeyType:                      "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits:              10
+        WriteCapacityUnits:             5
+
+  DynamoWriterPolicy:
+    Type:                               "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName:                !Sub "DynamoWriter-${DynamoTableName}"
+      Description:                      "Allows writes to the example DynamoDB table"
+      PolicyDocument:
+        Version:                        "2012-10-17"
+        Statement:
+          -
+            Effect:                     "Allow"
+            Action:
+              -                         "dynamodb:PutItem"
+            Resource:                   !GetAtt DynamoTable.Arn
+
+  DynamoReaderPolicy:
+    Type:                               "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName:                !Sub "DynamoReader-${DynamoTableName}"
+      Description:                      "Allows reading the example DynamoDB table"
+      PolicyDocument:
+        Version:                        "2012-10-17"
+        Statement:
+          -
+            Effect:                     "Allow"
+            Action:
+                -                       "dynamodb:GetItem"
+                -                       "dynamodb:Query"
+                -                       "dynamodb:Scan"
+            Resource:                   !GetAtt DynamoTable.Arn
+
+  ##
+  ## Roles for IoT and Lambda
+  ##
+
+  # this is global
+  IoTCoreExecutionRole:
+    Type:                               "AWS::IAM::Role"
+    Properties:
+      RoleName:                         "iot-core-execution-role"
+      AssumeRolePolicyDocument:
+        Version:                        "2012-10-17"
+        Statement:
+          Effect:                       "Allow"
+          Action:                       "sts:AssumeRole"
+          Principal:
+            Service:                    "iot.amazonaws.com"
+      ManagedPolicyArns:
+        -                               !Ref DynamoWriterPolicy
+
+  InfluxLambdaRole:
+    Type:                               "AWS::IAM::Role"
+    Properties:
+      Path:                             "/lambda/"
+      RoleName:                         !Sub "${InfluxLambdaName}-ExecutionRole"
+      AssumeRolePolicyDocument:
+        Version:                        "2012-10-17"
+        Statement:
+          Effect:                       "Allow"
+          Principal:
+            Service:                    "lambda.amazonaws.com"
+          Action:                       "sts:AssumeRole"
+      ManagedPolicyArns:
+        -                               "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  PostgresLambdaRole:
+    Type:                               "AWS::IAM::Role"
+    Properties:
+      Path:                             "/lambda/"
+      RoleName:                         !Sub "${PostgresLambdaName}-ExecutionRole"
+      AssumeRolePolicyDocument:
+        Version:                        "2012-10-17"
+        Statement:
+          Effect:                       "Allow"
+          Principal:
+            Service:                    "lambda.amazonaws.com"
+          Action:                       "sts:AssumeRole"
+      ManagedPolicyArns:
+        -                               "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  ##
+  ## Lambda
+  ##
+
+  InfluxLambdaFunction:
+    Type:                               "AWS::Lambda::Function"
+    Properties: 
+      FunctionName:                     !Ref InfluxLambdaName
+      Description:                      "Lambda triggered by Core IoT rule that writes data to InfluxDB"
+      Role:                             !GetAtt InfluxLambdaRole.Arn
+      # Layer is a public Chariot Solutions layer that contains PostgreSQL and InfluxDB drivers
+      Layers:
+        -                               arn:aws:lambda:us-east-1:366425516243:layer:IotWorkshopLayer:1
+      Runtime:                          "python3.7"
+      Handler:                          "index.lambda_handler"
+      Code:
+        ZipFile: |
+          import os
+          import json
+          from influxdb import InfluxDBClient
+
+          host = os.environ["INFLUXDB_HOSTNAME"]
+          user = os.environ["INFLUXDB_USER"]
+          password = os.environ["INFLUXDB_PASSWORD"]
+          db = os.environ["INFLUXDB_DATABASE"]
+          client = InfluxDBClient(host, 8086, user, password, db, ssl=True)
+
+          # https://docs.influxdata.com/influxdb/v1.7/concepts/crosswalk/
+          # https://github.com/influxdata/influxdb-python#examples
+          def save_to_influx(data):
+              """Save a dictionary of measurements to InfluxDB"""
+              data_points = []
+
+              measurements = list(data.keys())
+              # device and timestamp are not measurements
+              measurements.remove('device')
+              measurements.remove('timestamp')
+
+              # build structure to insert into InfluxDB
+              for measurement in measurements:
+                  data_point = {}
+                  data_point['measurement'] = measurement
+                  data_point['tags'] = {
+                      'device': data['device']
+                  }
+                  # convert milliseconds to nano-seconds
+                  data_point["time"] = int(data['timestamp'] * 1000)
+                  data_point["fields"] = { "value": float(data[measurement])}
+
+                  print(data_point)
+                  data_points.append(data_point)
+
+              # write multiple records at once
+              client.write_points(data_points, time_precision='u')
+              print(f'Saved {len(data_points)} measurements to InfluxDB')
+
+          def lambda_handler(event, context):
+            print(event)  # log the event
+            save_to_influx(event)
+            
+      MemorySize:                       128
+      Timeout:                          60
+      Environment: 
+        Variables:                      
+          INFLUXDB_HOSTNAME:            "influx.itpdtd.com"
+          INFLUXDB_USER:                "samantha"
+          INFLUXDB_PASSWORD:            "secret"
+          INFLUXDB_DATABASE:            "samantha"
+
+  PostgresLambdaFunction:
+    Type:                               "AWS::Lambda::Function"
+    Properties: 
+      FunctionName:                     !Ref PostgresLambdaName
+      Description:                      "Lambda triggered by Core IoT rule that writes data to PostgreSQL"
+      Role:                             !GetAtt PostgresLambdaRole.Arn
+      # Layer is a public Chariot Solutions layer that contains PostgreSQL and InfluxDB drivers
+      Layers:
+        -                               arn:aws:lambda:us-east-1:366425516243:layer:IotWorkshopLayer:1
+      Runtime:                          "python3.7"
+      Handler:                          "index.lambda_handler"
+      Code:
+        ZipFile: |
+          import os
+          import json
+          import psycopg2
+          from datetime import datetime
+
+          host = os.environ["POSTGRESQL_HOSTNAME"] 
+          user = os.environ["POSTGRESQL_USER"]
+          password = os.environ["POSTGRESQL_PASSWORD"]
+          db = os.environ["POSTGRESQL_DATABASE"]
+          conn = psycopg2.connect(host=host, database=db, user=user, password=password)
+
+          sql = """
+              INSERT INTO sensor_data (device, measurement, reading, recorded_at) 
+              VALUES (%s,%s,%s,%s)
+          """
+
+          def save_to_postgres(data):
+
+              timestamp = datetime.fromtimestamp(data['timestamp'] / 1000.0)
+
+              measurements = list(data.keys())
+              # device and timestamp are not measurements
+              measurements.remove('device')
+              measurements.remove('timestamp')
+    
+              params = []
+              device = data['device']
+              for measurement in measurements:
+                  reading = data[measurement]
+                  params.append([device, measurement, reading, timestamp])
+    
+              print(sql, params)
+
+              c = conn.cursor()
+              c.executemany(sql, params)
+              conn.commit()
+              c.close()
+
+          def lambda_handler(event, context):
+            print(event) # log the event
+            save_to_postgres(event)
+            
+      MemorySize:                       128
+      Timeout:                          60
+      Environment: 
+        Variables:                      
+          POSTGRESQL_HOSTNAME:            !GetAtt 'PostgreSQLDatabaseInstance.Endpoint.Address'
+          POSTGRESQL_USER:                "lambda"
+          POSTGRESQL_PASSWORD:            "hydrogen-5"
+          POSTGRESQL_DATABASE:            "itp"
+
+  ##
+  ## IoT Core Policies
+  ##
+
+  # Restrictive policy for devices
+  ThingPolicy:
+    Type: 'AWS::IoT::Policy'
+    Properties:
+      PolicyName: ThingPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 'iot:Connect'
+            Resource:
+              - !Sub 'arn:aws:iot:${AWS::Region}:${AWS::AccountId}:client/${!iot:Certificate.Subject.CommonName}'
+          - Effect: Allow
+            Action:
+              - 'iot:Publish'
+              - 'iot:Receive'
+            Resource: 
+              - !Sub 'arn:aws:iot:${AWS::Region}:${AWS::AccountId}:topic/things/${!iot:ClientId}/*'
+          - Effect: Allow
+            Action: 'iot:Subscribe'
+            Resource: 
+              - !Sub 'arn:aws:iot:${AWS::Region}:${AWS::AccountId}:topicfilter/things/${!iot:ClientId}/*'
+
+  # Wide open policy for debugging Things
+  AllowAllPolicy:
+    Type: 'AWS::IoT::Policy'
+    Properties:
+      PolicyName: AllowAllPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 'iot:*'
+            Resource:
+              - '*'
