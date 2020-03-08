@@ -33,7 +33,7 @@ Under `Specify Template` choose `Upload a template file` as the template source.
  * Skip the configure stack options, just click `next`. 
  * On the review page,make sure you check the `I acknowledge ...` box at the bottom of the page and click `Create Stack` button. 
 
-![Cloud Formation - Create Stack Complete](img/aws-stack-complete.png)
+![Cloud Formation - Create Stack Complete](img/aws-cloudformation-stack.png)
 
 Once the template finishes running you will have a bunch of new AWS resources that we will use during class.
 
