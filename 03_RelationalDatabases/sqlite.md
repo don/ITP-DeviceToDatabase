@@ -144,7 +144,7 @@ SQLite supports views. Create some views for temperature and humidity
 	    FROM sensor_data 
 	    WHERE measurement = 'humidity';
 		
-By matching the device and timestamps, we can create another view that combines temeperature and humidity into one row for data that arrived at the same time
+By matching the device and timestamps, we can create another view that combines temperature and humidity into one row for data that arrived at the same time
 
 	CREATE VIEW environment AS
 	    SELECT t.device, t.reading AS temperature, h.reading AS humidity, t.recorded_at
