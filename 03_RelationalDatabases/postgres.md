@@ -166,7 +166,7 @@ Use `like` when you have a wildcard `%` in the where clause.
 
 ![screenshot like with wildcard](img/select-mqtt-like.png)
 
-This works OK but it's a bit clunky using the wildcard in the topic. It would be nice if device and column were in separate columns. The bigger problem is the temperature is stored as an TEXT or VARCHAR column rather than a number. 
+This works OK but it's a bit clunky using the wildcard in the topic. It would be nice if device and measurement were in separate columns. The bigger problem is the temperature is stored as an TEXT or VARCHAR column rather than a number. 
 
 I created a `sensor_data` table to break out the device and measurement from the topic into separate columns. It also stores the data point or reading as number.
 
