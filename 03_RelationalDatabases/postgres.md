@@ -109,9 +109,9 @@ We can retrieve the record.
 
 ![screenshot psql select after insert](img/select-after-insert.png)
 
-Notice that id and recorded_at are both populated in the row that was inserted. The database automatically added these values based on our table definition.
+Notice that `id` and `recorded_at` are both populated in the row that was inserted. The database automatically added these values based on our table definition.
 
-Inserts some additional records.
+Insert some additional records.
 
     INSERT INTO mqtt_message (topic, payload) VALUES ('test', 'hi');
     INSERT INTO mqtt_message (topic, payload) VALUES ('itp/device12/temperature', 72.4);
