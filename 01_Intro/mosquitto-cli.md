@@ -1,4 +1,4 @@
-# Mosquitto Commmand Line Examples
+# Mosquitto Command Line Examples
 
 MQTT command line examples from class
 
