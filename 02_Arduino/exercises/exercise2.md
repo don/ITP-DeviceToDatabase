@@ -7,12 +7,19 @@
 Suggested wiring instructions:
 
 1. Place the solderless breadboard with A1 on the bottom left.
-1. Plug the Arduino MKR WiFi 1010 into the breadboard with the AREF pin in C1.
-1. Plug the Arduino MKR ENV Shield into the Arudino MRK 1010
-1. Plug the LED into E19 and E20. Make sure the longer leg is in E19.
-   * Run a 220 &#937; or 330 &#937; resistor from the negative rail to C20
-   * Run a blue wire from A14 (pin 5 on the Arduino) to A19 (anode of the LED)
-1. Run a black wire from J4 (GND pin on the Arduino) to the negative rail
+1. Plug the Arduino Nano 33 IoT into the breadboard so pin D13 is in C1 on the breadboard.
+1. Plug the DHT22 sensor into E11
+   * Run a red wire from the positive rail to A27
+   * Run a 10,000 &#937; resistor from the positive rail to A28
+   * Run a black wire from the negative rail to A30
+   * Run a blue wire from H1 (pin D3 in the Arduino) to B28
+1. Plug the LED into D19 and D20. Make sure the longer leg is in D19.
+   * Run a 220 &#937; or 330 &#937; resistor from the negative rail to B20
+   * Run a green wire from A1 (pin D13 on the Arduino) to B19 (the anode of the LED)
+1. Run a red wire from A2 (+3V3 pin on the Arduino) to the positive rail
+1. Run a black wire from A14 (GND pin on the Arduino) to the negative rail
+
+The Nano 33 IoT pins are labeled in [this diagram](https://content.arduino.cc/assets/Pinout-NANO33IoT_latest.png).
 
 ## Hardware Test
 
