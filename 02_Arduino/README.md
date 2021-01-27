@@ -1,6 +1,6 @@
 # Arduino and MQTT
 
-Build an IoT device using Arduino MKR WiFi 1010 and Arduino MKR ENV shield
+Build an IoT device using Arduino Nano 33 IoT board
 
 ## Exercises
 

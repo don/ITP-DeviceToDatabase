@@ -11,6 +11,8 @@ Click the "Just Download" button
 
 ![Arduino IDE Just Download](images/ArduinoIDE-just-download.png)
 
+Run the installer.
+
 ### Arduino SAMD Board Definitions
 Use the Arduino Boards Manager to install the Arduino SAMD Board definitions. Open the Boards Manager using the menu _Tools -> Boards -> Boards Manager_
 
