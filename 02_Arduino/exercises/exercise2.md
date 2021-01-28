@@ -24,8 +24,8 @@ The Nano 33 IoT pins are labeled in [this diagram](https://content.arduino.cc/as
 ## Hardware Test
 
 1. Open arduino/HardwareTest/HardwareTest.ino in the Arduino IDE
-1. Choose the board _Tools -> Board -> Arduino MKR WiFi 1010_
-1. Choose the port _Tools -> Port -> COM 4 (Arduino MKR WiFI 1010)_ Note that the actual port may be different on your computer
+1. Choose the board _Tools -> Board -> Arduino NANO 33 IoT_
+1. Choose the port _Tools -> Port -> COM 3 (Arduino NANO 33 IoT)_ Note that the actual port may be different on your computer
 1. Upload the code to the board _Sketch -> Upload_
 1. The LED should be a solid color
 1. Open the serial monitor _Tools -> Serial Monitor_
@@ -35,9 +35,7 @@ The Nano 33 IoT pins are labeled in [this diagram](https://content.arduino.cc/as
 
 ## Register MAC address with ITP Sandbox Network
 
-If you're using an Arduino from the ER you can skip this step. 
-
-In order to join the `itpsandbox` wireless network, the MAC address of the device must be registered with [NYU-NET](https://computer.registration.nyu.edu/). Use the [MacAddress sketch](../arduino/MacAddress/MacAddress.ino) to get the MAC address for your device. 
+Skip this step if you're not on the 4th floor at 370 Jay Street. In order to join the `itpsandbox` wireless network, the MAC address of the device must be registered with [NYU-NET](https://computer.registration.nyu.edu/). Use the [MacAddress sketch](../arduino/MacAddress/MacAddress.ino) to get the MAC address for your device. 
 
 [Tom Igoe's documentation](https://itp.nyu.edu/networks/tutorials/itp-network-connections/) has more details about the process.
 
