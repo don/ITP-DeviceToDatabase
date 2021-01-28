@@ -5,12 +5,13 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// username password combinations are in hardcoded in the users object
 const basicAuth = require('express-basic-auth');
 app.use(basicAuth({
     challenge: true,
     users: { 
-        'user': 'secret',
-        'user2': 'secret'
+        'sarah': 'hunter2',
+        'mike': 'coffee$',
     }
 }));
 
