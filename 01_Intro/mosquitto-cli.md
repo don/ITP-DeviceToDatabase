@@ -2,6 +2,10 @@
 
 MQTT command line examples from class
 
+## Installation
+
+On macOS, install with `brew install mosquitto`. For Windows, download from https://mosquitto.org/download/.
+
 ## Subscribing
 
 Subscribe to all messages
@@ -45,21 +49,41 @@ The multi level wildcard is **#**.
 
 Write a message to the message topic
 
-	mosquitto_pub -h itpdtd.com -t message -m 'hello, world'
+	mosquitto_pub -h dev2db.cloud.shiftr.io -u dev2db -P public -t message -m 'hello, world'
 
-Turn the LED on device_01 on
-	
-	mosquitto_pub -h itpdtd.com -t itp/device_01/led -m 100       
-	
-Turn the LED on device_01 off
+Set default host, user, and password in `~/.config/mosquitto_pub` to save some typing.
 
-	mosquitto_pub -h itpdtd.com -t itp/device_01/led -m 0       
+	# ~/.config/mosquitto_pub
+	-h dev2db.cloud.shiftr.io
+	-u dev2db
+	-P public
+
+Turn the LED on the mkr-1010 on
+	
+	mosquitto_pub -t itp/mkr-1010/led -m on
+	
+Turn the LED on the mkr-1010 off
+
+	mosquitto_pub -t itp/mkr-1010/led -m off
 
 Write a message to a long topic
 
-	mosquitto_pub -h itpdtd.com -t itp/foo/bar/baz/ack -m yeet
+	mosquitto_pub -t itp/foo/bar/baz/ack -m 17
 
-The `-h` flag specifies the hostname of the broker. The `-t` flag specifies the topic to publish to. The `-m` flag specifies the message to publish.
+Change the color of the neopixel lights
+
+	mosquitto_pub -t itp/neopixel/color -m red
+	mosquitto_pub -t itp/neopixel/color -m green
+	mosquitto_pub -t itp/neopixel/color -m blue
+
+Change the color of the neopixel lights using a hex color
+
+	mosquitto_pub -t itp/neopixel/color -m #ff00ff
+	mosquitto_pub -t itp/neopixel/color -m #00ffff
+
+
+The `-h` flag specifies the hostname of the broker. The '-u' flag specifies the user and the '-P' flag specifies the password. The `-t` flag specifies the topic to publish to. The `-m` flag specifies the message to publish.
+
 
 ## Documentation
 
