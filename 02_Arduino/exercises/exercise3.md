@@ -32,8 +32,7 @@ In this module, you will publish temperature and humidity data using HTTP. We wi
 
 1. Download and install Node.js 14.15.4 LTS from https://nodejs.org/en/
 1. Open a command prompt or terminal
-1. Navigate to the server directory under 02_Arduino
-1. cd ITP_DeviceToDatabase/02_Arduino/server
+1. Navigate to the server directory under 02_Arduino e.g. *cd ITP_DeviceToDatabase/02_Arduino/server*
 1. Run `npm install` to install the dependencies
 1. Run `node server.js` to start the server 
 
@@ -68,13 +67,13 @@ You can view collected data using a web browser http://localhost:3000 or by view
 
 ## Curl
 
-Since the server accepts data via a HTTP post, you can use tools like curl to send data to your server. This is useful for testing your server (or sending data to your neighbors server.) Replace 10.0.1.2 with the IP address of your server.
+Since the server accepts data via a HTTP post, you can use tools like curl to send data to your server. This is useful for testing your server (or sending data to your neighbors server.) Replace 192.168.86.32 with the IP address of your server.
 
-    curl -X POST -d message=hello -d name=world 10.0.1.2:3000
+    curl -X POST -d message=hello -d name=world 192.168.86.32:3000
 
 Curl can also be used to fetch data
 
-    curl -v 10.0.1.2:3000
+    curl -v 192.168.86.32:3000
 
 ## Powershell
 
