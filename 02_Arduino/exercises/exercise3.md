@@ -105,7 +105,7 @@ You can add and modify the users and passwords in server3.js. Restart the server
 
 ## Encryption
 
-So far, we've been sending data over HTTP which is plaintext. This isn't good. When our data isn't encrypted, anyone on the network can intercept and view our data. [Wireshark](https://www.wireshark.org/) is a tool that lets you capture and inspect network traffic. From the screenshot below, you can see Sarah's password, because the connection between the Arduino and the server is not encrypted.
+So far, we've been sending data over HTTP which is plaintext. This isn't good. When our data isn't encrypted, anyone on the network can intercept and view our data. [Wireshark](https://www.wireshark.org/) is a tool that lets you capture and inspect network traffic. From the screenshot below, you can see Sarah's password because the connection between the Arduino and the server is not encrypted.
 
 ![Screenshot of wireshark capturing a password from an unencrypted connection](images/wireshark.png)
 
