@@ -1,8 +1,13 @@
 #include <WiFiNINA.h>
-#include <Arduino_MKRENV.h>
 #include <ArduinoHttpClient.h>
-
 #include "config.h"
+
+#include <DHT.h>
+
+#define DHTPIN 3          // Digital pin connected to the DHT sensor
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
+DHT dht(DHTPIN, DHTTYPE);
 
 // Use WiFiClient for HTTP, WiFiSSLClient for HTTPS
 WiFiClient wifi;
@@ -17,30 +22,28 @@ void setup() {
   // wait for a serial connection
   while (!Serial);
 
-  // initialize MKR ENV shield
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
+  // initialize dht
+  dht.begin();
   
   connectWiFi();
 }
 
 void loop() {
 
-  float temperature = ENV.readTemperature(FAHRENHEIT);
-  float humidity = ENV.readHumidity();
+  // read the sensor values
+  float temperature = dht.readTemperature(true);
+  float humidity    = dht.readHumidity();
 
+  // print the values for debugging
   Serial.print(temperature);
   Serial.print("°F ");
   Serial.print(humidity);
   Serial.println("% RH");
-  
-  Serial.println("making POST request");
+
+  Serial.println("Sending data to server via HTTP POST");
   String contentType = "application/x-www-form-urlencoded";
-  // sensor data
-  String postData = "temperature=" + String(temperature) + "&humidity=" + String(humidity);
-  // device id
+  String postData = "temperature=" + String(temperature);
+  postData += "&humidity=" + String(humidity);
   postData += "&device=" + String(DEVICE_ID);
 
   client.beginRequest();
@@ -61,8 +64,9 @@ void loop() {
   Serial.print("Response: ");
   Serial.println(response);
 
-  Serial.println("Wait ten seconds");
+  Serial.println("Waiting for ten seconds\n");
   delay(10000);
+
 }
 
 void connectWiFi() {
