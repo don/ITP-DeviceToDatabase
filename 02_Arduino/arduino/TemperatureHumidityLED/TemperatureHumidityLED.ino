@@ -1,15 +1,20 @@
-// IoT Workshop
 // Send temperature and humidity data to MQTT
 //
 // WiFiNINA https://www.arduino.cc/en/Reference/WiFiNINA (MKR WiFi 1010)
-// Arduino MKR ENV https://www.arduino.cc/en/Reference/ArduinoMKRENV
 // Arduino MQTT Client  https://github.com/arduino-libraries/ArduinoMqttClient
+// Adafruit DHT
 
 #include <WiFiNINA.h>
-#include <Arduino_MKRENV.h>
 #include <ArduinoMqttClient.h>
 
 #include "config.h"
+
+#include <DHT.h>
+
+#define DHTPIN 3          // Digital pin connected to the DHT sensor
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
+DHT dht(DHTPIN, DHTTYPE);
 
 WiFiSSLClient net;
 MqttClient mqtt(net);
@@ -21,27 +26,23 @@ String ledTopic = "itp/" + DEVICE_ID + "/led";
 // Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
 unsigned long publishInterval = 10 * 1000;
 unsigned long lastMillis = 0;
-const int ledPin = 5;
+const int ledPin = 13;
 
 void setup() {
   Serial.begin(9600);
 
   // Wait for a serial connection
   while (!Serial) { }
-  
-  // initialize the shield
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
 
   // initialize ledPin as an output.
   pinMode(ledPin, OUTPUT);
- 
+  
+  dht.begin();
+   
   Serial.println("Connecting WiFi");
   connectWiFi();
 
-  // define function for incoming MQTT messages
+  // set callback function for incoming MQTT messages
   mqtt.onMessage(messageReceived);
 }
 
@@ -60,8 +61,9 @@ void loop() {
   if (millis() - lastMillis > publishInterval) {
     lastMillis = millis();
 
-    float temperature = ENV.readTemperature(FAHRENHEIT);
-    float humidity = ENV.readHumidity();
+    // read the sensor values
+    float temperature = dht.readTemperature(true);
+    float humidity    = dht.readHumidity();
 
     Serial.print(temperature);
     Serial.print("°F ");
@@ -138,21 +140,8 @@ void messageReceived(int messageSize) {
   Serial.println("incoming: " + topic + " - " + messageSize + " bytes ");
   Serial.println(payload);
   if (payload.equalsIgnoreCase("ON")) {
-    analogWrite(ledPin, 255);  // need analog write for older firmware
+    digitalWrite(ledPin, HIGH);
   } else if (payload.equalsIgnoreCase("OFF")) {
-    analogWrite(ledPin, LOW);    
-  } else {
-    
-    // see if we have a brightness value
-    int percent = payload.toInt();
-    // check the range
-    if (percent < 0) { 
-      percent = 0; 
-    } else if (percent > 100) { 
-      percent = 100; 
-    }
-    // map brightness of 0 to 100 to 1 byte value 0x00 to 0xFF
-    int brightness = map(percent, 0, 100, 0, 255);
-    analogWrite(ledPin, brightness);
-  }
+    digitalWrite(ledPin, LOW);    
+  } 
 }
