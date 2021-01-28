@@ -6,25 +6,25 @@ MQTT command line examples from class
 
 Subscribe to all messages
 
-	mosquitto_sub -h itpdtd.com -t '#' -v
+	mosquitto_sub -h dev2db.cloud.shiftr.io -u dev2db -P public -t '#' -v
 
-Subscribe to the temperature topic for device_01
+Subscribe to the temperature topic for nano33 device
 
-	mosquitto_sub -h itpdtd.com -t itp/device_01/temperature -v
+	mosquitto_sub -h dev2db.cloud.shiftr.io -u dev2db -P public -t itp/nano33/temperature -v
 
-Subscribe to the humidity topic for device_01
+Subscribe to the humidity topic for nano33 device
 
-	mosquitto_sub -h itpdtd.com -t itp/device_01/humidity -v
+	mosquitto_sub -h dev2db.cloud.shiftr.io -u dev2db -P public -t itp/nano33/humidity -v
 	
-Subscribe to all the topics for device_01
+Subscribe to all the topics for nano33 device
 
-	mosquitto_sub -h itpdtd.com -t itp/device_01/+ -v
+	mosquitto_sub -h dev2db.cloud.shiftr.io -u dev2db -P public -t itp/nano33/+ -v
 	
 Subscribe to the temperature topic for all devices
 
-	mosquitto_sub -h itpdtd.com -t itp/+/temperature -v
+	mosquitto_sub -h dev2db.cloud.shiftr.io -u dev2db -P public -t itp/+/temperature -v
 
-The `-h` flag specifies the hostname of the broker. The `-t` flag specifies the topic to subscribe to. The `-v` flag is verbose mode which prints the topic along with the payload.
+The `-h` flag specifies the hostname of the broker. The '-u' flag specifies the user and the '-P' flag specifies the password. The `-t` flag specifies the topic to subscribe to. The `-v` flag is verbose mode which prints the topic along with the payload. 
 
 ### Wildcards
 
@@ -32,14 +32,14 @@ Wildcards only work for subscribing, not publishing
 
 The single level wildcard is **+**.
 
-	itp/device_01/+
+	itp/nano33/+
 	itp/+/temperature
 	
 The multi level wildcard is **#**.
 
 	#
 	itp/#
-	itp/device_01/#
+	itp/nano33/#
 
 ## Publishing 
 
