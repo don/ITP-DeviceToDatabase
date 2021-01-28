@@ -27,15 +27,15 @@ Using cmd or PowerShell run from C:\Program Files\mosquitto
 
 We want to use TLS certificates to encrypt all traffic to between our MQTT broker and the clients. Let's Encrypt letsencrypt.org is a automated certificate authority that makes it easy to get free TLS certificates. We set up the Nginx web server and use the letsencypt bot to get a SSL certificate. Then we install mosquitto, configure it to use the TLS certificate and require users to login. These instructions are based on Digital Ocean's excellent documentation. https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-the-mosquitto-mqtt-messaging-broker-on-ubuntu-18-04
 
-Create a new DigitalOcean virtual machine (or other VM.) I chose Ubuntu 18.10 x64 and the $5/month droplet size.
+Create a new DigitalOcean virtual machine (or other VM.) I chose Ubuntu 20.04 x64 and the $5/month droplet size.
 
  * Choose NY data center
  * Add a ssh key for logging in
  * Choose a hostname
 
-I have DigitalOcean running DNS for the itpdtd.com domain, so I can set up a new domain record for itpdtd.com pointing to my new VM.
+I have DigitalOcean running DNS for the dev2db.com domain, so I can set up a new domain record for dev2db.com pointing to my new VM.
 
-Since I set up my SSH key when I created the machine, I can ssh into root@itpdtd.com
+Since I set up my SSH key when I created the machine, I can ssh into root@dev2db.com
 
 Turn on the firewall and restrict incoming traffic to ssh, port 22
 
@@ -53,7 +53,7 @@ Reboot, just in case the kernel was upgraded
 
 SSH back in
 
-    ssh root@itpdtd.com
+    ssh root@dev2db.com
 
 Install the compiler tools, mosquitto broker, mosquitto clients, and nginx 
 
@@ -64,16 +64,15 @@ Open the firewall for web traffic
     ufw allow http
     ufw allow https
 	
-Open your http://itpdtd.com in a web browser to ensure nginx is running
+Open your http://dev2db.com in a web browser to ensure nginx is running
 
 Install the letsencrypt.org certbot
 
-	add-apt-repository ppa:certbot/certbot
-	apt install python-certbot-nginx -y
+	apt install certbot python3-certbot-nginx -y
 
 Get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when it asks you to redirect all http traffic to https.
 
-    certbot --nginx -d itpdtd.com
+    certbot --nginx -d dev2db.com
 
 Now you're ready to configure Mosquitto to use TLS for MQTT and WebSockets. Create a new configuration file /etc/mosquitto/conf.d/default.conf. This does 3 things 1) disables anonymous access. 2) use the TLS certificate for MQTTS on port 8883 and 3) enables websockets over TLS on port 8083.
 
@@ -88,18 +87,18 @@ Now you're ready to configure Mosquitto to use TLS for MQTT and WebSockets. Crea
 
 	# MQTTS - TLS connection on 8883
 	listener 8883
-	# adjust itpdtd.com to match your domain
-	certfile /etc/letsencrypt/live/itpdtd.com/cert.pem
-	cafile /etc/letsencrypt/live/itpdtd.com/chain.pem
-	keyfile /etc/letsencrypt/live/itpdtd.com/privkey.pem
+	# adjust dev2db.com to match your domain
+	certfile /etc/letsencrypt/live/dev2db.com/cert.pem
+	cafile /etc/letsencrypt/live/dev2db.com/chain.pem
+	keyfile /etc/letsencrypt/live/dev2db.com/privkey.pem
 
 	# Secure Websocket connection on 8083
 	listener 8083
 	protocol websockets
 	# point to the same SSL certifciates
-	certfile /etc/letsencrypt/live/itpdtd.com/cert.pem
-	cafile /etc/letsencrypt/live/itpdtd.com/chain.pem
-	keyfile /etc/letsencrypt/live/itpdtd.com/privkey.pem
+	certfile /etc/letsencrypt/live/dev2db.com/cert.pem
+	cafile /etc/letsencrypt/live/dev2db.com/chain.pem
+	keyfile /etc/letsencrypt/live/dev2db.com/privkey.pem
 
 	# make sure this file ends with a trailing newline
 		

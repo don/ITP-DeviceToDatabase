@@ -1,10 +1,16 @@
 #include <WiFiNINA.h>
-#include <Arduino_MKRENV.h>
 #include <ArduinoBearSSL.h>
 #include <ArduinoECCX08.h>
 #include <ArduinoMqttClient.h>
 
 #include "config.h"
+
+#include <DHT.h>
+
+#define DHTPIN 3          // Digital pin connected to the DHT sensor
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
+DHT dht(DHTPIN, DHTTYPE);
 
 WiFiClient wifiClient;
 BearSSLClient sslClient(wifiClient);
@@ -30,11 +36,8 @@ void setup() {
   // initialize digital pin led as an output.
   pinMode(ledPin, OUTPUT);
 
-  // initialize the shield
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
+  // initialize the dht
+  dht.begin();
 
   // set a callback to get the current time
   // used for certification validation
@@ -151,26 +154,15 @@ void messageReceived(int messageSize) {
 
 void sendSensorData() {
 
-  // read sensor values using the ENV library
-  // https://www.arduino.cc/en/Reference/Arduino_MKRENV
-  float temperature = ENV.readTemperature(FAHRENHEIT);   // °F
-  float humidity    = ENV.readHumidity();                // % Relative Humidity
-  float pressure    = ENV.readPressure();                // kPa
-  float illuminance = ENV.readIlluminance();             // lux
-  float uva         = ENV.readUVA();                     // μW/cm2
-  float uvb         = ENV.readUVB();                     // μW/cm2
-  float uvindex     = ENV.readUVIndex();                 // 0 - 11
+  // read sensor values
+  float temperature = dht.readTemperature(true);         // °F
+  float humidity    = dht.readHumidity();                // % Relative Humidity
 
   // Manually build JSON string
   String data =
     "{\n"
     "  \"temperature\": " + String(temperature, 1) + ",\n"
-    "  \"humidity\": "    + String(humidity, 0)    + ",\n"
-    "  \"pressure\": "    + String(pressure, 3)    + ",\n"
-    "  \"illuminance\": " + String(illuminance, 3) + ",\n"
-    "  \"uva\": "         + String(uva, 2)         + ",\n"
-    "  \"uvb\": "         + String(uvb, 2)         + ",\n"
-    "  \"uvindex\": "     + String(uvindex, 1)     + "\n"
+    "  \"humidity\": "    + String(humidity, 0)    + "\n"
     "}";
 
   String topic = "things/" + clientId + "/environment";

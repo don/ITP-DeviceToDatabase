@@ -1,5 +1,5 @@
 let client;
-let broker = 'wss://itpdtd.com:8083';
+let broker = 'wss://dev2db.com:8083';
 
 function connect() {
   console.log('Connecting');

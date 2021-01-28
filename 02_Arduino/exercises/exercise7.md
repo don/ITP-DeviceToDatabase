@@ -24,6 +24,6 @@ The Arduino can publish and subscribe to MQTT messages at the same time. The [Te
 
 # Challenge: Dimmable LED
 
-Edit the Arudino code and make the LED dimmable. Add a [range control](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) to the HTML page. Allow the user to use the radio buttons or the range control to adjust the LED.
+Edit the Arudino code and make the LED dimmable. Add a [range control](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) to the HTML page. Allow the user to use the radio buttons or the range control to adjust the LED. Note that pin 13 on the Nano 33 IoT does not support [analogWrite](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/).
 
 Next [Exercise 8: Connecting using X.509 certs](exercise8.md)

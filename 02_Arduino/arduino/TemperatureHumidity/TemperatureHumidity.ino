@@ -1,15 +1,20 @@
-// IoT Workshop
 // Send temperature and humidity data to MQTT
 //
 // WiFiNINA https://www.arduino.cc/en/Reference/WiFiNINA (MKR WiFi 1010)
-// Arduino MKR ENV https://www.arduino.cc/en/Reference/ArduinoMKRENV
 // Arduino MQTT Client  https://github.com/arduino-libraries/ArduinoMqttClient
+// Adafruit DHT
 
 #include <WiFiNINA.h>
-#include <Arduino_MKRENV.h>
 #include <ArduinoMqttClient.h>
 
 #include "config.h"
+
+#include <DHT.h>
+
+#define DHTPIN 3          // Digital pin connected to the DHT sensor
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
+DHT dht(DHTPIN, DHTTYPE);
 
 WiFiSSLClient net;
 MqttClient mqtt(net);
@@ -27,12 +32,8 @@ void setup() {
   // Wait for a serial connection
   while (!Serial) { }
 
-  // initialize the shield
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
- 
+  dht.begin();
+   
   Serial.println("Connecting WiFi");
   connectWiFi();
 }
@@ -52,8 +53,9 @@ void loop() {
   if (millis() - lastMillis > publishInterval) {
     lastMillis = millis();
 
-    float temperature = ENV.readTemperature(FAHRENHEIT);
-    float humidity = ENV.readHumidity();
+    // read the sensor values
+    float temperature = dht.readTemperature(true);
+    float humidity    = dht.readHumidity();
 
     Serial.print(temperature);
     Serial.print("°F ");

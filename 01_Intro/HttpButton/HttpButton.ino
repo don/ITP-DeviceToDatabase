@@ -1,13 +1,7 @@
 #include <WiFiNINA.h>
 #include <ArduinoHttpClient.h>
+
 #include "config.h"
-
-#include <DHT.h>
-
-#define DHTPIN 3          // Digital pin connected to the DHT sensor
-//#define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
 
 // Use WiFiClient for HTTP, WiFiSSLClient for HTTPS
 WiFiClient wifi;
@@ -16,44 +10,51 @@ HttpClient client = HttpClient(wifi, SERVER_ADDRESS, SERVER_PORT);
 
 int wifi_status = WL_IDLE_STATUS;
 
+const int buttonPin = 2;
+int count = 0;
+int previousButtonValue = HIGH;
+
 void setup() {
   Serial.begin(9600);
   
-  // wait for a serial connection
+  //configure pin 2 as an input and enable the internal pull-up resistor
+  pinMode(buttonPin, INPUT_PULLUP);
+
+  // wait for a serial connection for debugging
   while (!Serial);
 
-  // initialize dht
-  dht.begin();
-  
   connectWiFi();
 }
 
 void loop() {
 
-  // read the sensor values
-  float temperature = dht.readTemperature(true);
-  float humidity    = dht.readHumidity();
+  // read the state of the button pin into a variable
+  int buttonValue = digitalRead(buttonPin);
 
-  // print the values for debugging
-  Serial.print(temperature);
-  Serial.print("°F ");
-  Serial.print(humidity);
-  Serial.println("% RH");
+  // see if the value has changed
+  if (buttonValue != previousButtonValue) {
 
-  Serial.println("Sending data to server via HTTP POST");
+    // since we're using the internal pullup resistor
+    // HIGH is released and LOW is pressed
+    if (buttonValue == LOW) {
+      Serial.println("The button is pressed, increasing count.");
+      count++;
+      sendDataToServer();
+    }
+    previousButtonValue = buttonValue;
+  }
+
+}
+
+void sendDataToServer() {
+  Serial.println("making POST request");
   String contentType = "application/x-www-form-urlencoded";
-  String postData = "temperature=" + String(temperature);
-  postData += "&humidity=" + String(humidity);
+  // sensor data
+  String postData = "count=" + String(count);
+  // device id
   postData += "&device=" + String(DEVICE_ID);
 
-  client.beginRequest();
-  client.post("/");
-  client.sendBasicAuth(HTTP_USER, HTTP_PASSWORD);
-  client.sendHeader("Content-Type", "application/x-www-form-urlencoded");
-  client.sendHeader("Content-Length", postData.length());
-  client.beginBody();
-  client.print(postData);
-  client.endRequest();
+  client.post("/", contentType, postData);
 
   // read the status code and body of the response
   int statusCode = client.responseStatusCode();
@@ -63,10 +64,6 @@ void loop() {
   Serial.println(statusCode);
   Serial.print("Response: ");
   Serial.println(response);
-
-  Serial.println("Waiting for ten seconds\n");
-  delay(10000);
-
 }
 
 void connectWiFi() {

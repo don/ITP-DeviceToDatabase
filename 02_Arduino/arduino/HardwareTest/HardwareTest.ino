@@ -3,14 +3,21 @@
 // Run this sketch to test that your hardware is wired correctly. This code
 // blinks the LED and prints the sensor data to the serial console.
 //
-// Arduino MKR ENV https://www.arduino.cc/en/Reference/ArduinoMKRENV
 
-#include <Arduino_MKRENV.h>
+#include <DHT.h>
 
-const int ledPin = 5;
+#define DHTPIN 3          // Digital pin connected to the DHT sensor
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
+DHT dht(DHTPIN, DHTTYPE);
+
+const int ledPin = LED_BUILTIN;
 
 void setup() {
   Serial.begin(9600);
+
+  // initialize the DHT sensor
+  dht.begin();
 
   // initialize the ledPin as an output.
   pinMode(ledPin, OUTPUT);
@@ -20,51 +27,24 @@ void setup() {
   
   // wait for a serial connection from the computer
   while (!Serial);
-
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
-
+  
   Serial.println("Hardware Test");
 }
 
 void loop() {
   
-  // read all the sensor values
-  float temperature = ENV.readTemperature();
-  float humidity    = ENV.readHumidity();
-  float pressure    = ENV.readPressure();
-  float illuminance = ENV.readIlluminance();
-  float uva         = ENV.readUVA();
-  float uvb         = ENV.readUVB();
-  float uvIndex     = ENV.readUVIndex();
+  // read the sensor values
+  float temperature = dht.readTemperature(true);
+  float humidity    = dht.readHumidity();
 
   // print each of the sensor values
   Serial.print("Temperature = ");
   Serial.print(temperature);
-  Serial.println(" °C");
+  Serial.println(" °F");
 
   Serial.print("Humidity    = ");
   Serial.print(humidity);
   Serial.println(" %");
-
-  Serial.print("Pressure    = ");
-  Serial.print(pressure);
-  Serial.println(" kPa");
-
-  Serial.print("Illuminance = ");
-  Serial.print(illuminance);
-  Serial.println(" lx");
-
-  Serial.print("UVA         = ");
-  Serial.println(uva);
-
-  Serial.print("UVB         = ");
-  Serial.println(uvb);
-
-  Serial.print("UV Index    = ");
-  Serial.println(uvIndex);
 
   // print an empty line
   Serial.println();

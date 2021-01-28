@@ -1,48 +1,45 @@
-// Send temperature and humidity data to MQTT
+// ITP Device to Database 2021
+// Send button press and data via MQTT
+// Control LED via MQTT
 //
 // WiFiNINA https://www.arduino.cc/en/Reference/WiFiNINA (MKR WiFi 1010)
 // Arduino MQTT Client  https://github.com/arduino-libraries/ArduinoMqttClient
-// Adafruit DHT
+//
+// Don Coleman
 
 #include <WiFiNINA.h>
 #include <ArduinoMqttClient.h>
 
 #include "config.h"
 
-#include <DHT.h>
-
-#define DHTPIN 3          // Digital pin connected to the DHT sensor
-//#define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
-
-WiFiSSLClient net;
+WiFiClient net;
 MqttClient mqtt(net);
 
-String temperatureTopic = "itp/" + DEVICE_ID + "/temperature";
-String humidityTopic = "itp/" + DEVICE_ID + "/humidity";
+String buttonTopic = "itp/" + DEVICE_ID + "/button";
+String countTopic = "itp/" + DEVICE_ID + "/count";
 String ledTopic = "itp/" + DEVICE_ID + "/led";
 
-// Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
-unsigned long publishInterval = 10 * 1000;
-unsigned long lastMillis = 0;
-const int ledPin = 13;
+const int buttonPin = 2;
+const int ledPin = 10;
+int count = 0;
+int previousButtonValue = HIGH;
 
 void setup() {
   Serial.begin(9600);
 
   // Wait for a serial connection
-  while (!Serial) { }
+  // while (!Serial) { }
 
+  //configure pin 2 as an input and enable the internal pull-up resistor
+  pinMode(buttonPin, INPUT_PULLUP);
+  
   // initialize ledPin as an output.
   pinMode(ledPin, OUTPUT);
-  
-  dht.begin();
-   
+ 
   Serial.println("Connecting WiFi");
   connectWiFi();
 
-  // set callback function for incoming MQTT messages
+  // define function for incoming MQTT messages
   mqtt.onMessage(messageReceived);
 }
 
@@ -58,26 +55,29 @@ void loop() {
   // poll for new MQTT messages and send keep alives
   mqtt.poll();
 
-  if (millis() - lastMillis > publishInterval) {
-    lastMillis = millis();
+  // read the state of the button pin into a variable
+  int buttonValue = digitalRead(buttonPin);
 
-    // read the sensor values
-    float temperature = dht.readTemperature(true);
-    float humidity    = dht.readHumidity();
+  // see if the value has changed
+  if (buttonValue != previousButtonValue) {
 
-    Serial.print(temperature);
-    Serial.print("°F ");
-    Serial.print(humidity);
-    Serial.println("% RH");
-    
-    mqtt.beginMessage(temperatureTopic);
-    mqtt.print(temperature); 
+    mqtt.beginMessage(buttonTopic);
+    mqtt.print(buttonValue); 
     mqtt.endMessage();
 
-    mqtt.beginMessage(humidityTopic);
-    mqtt.print(humidity); 
-    mqtt.endMessage();
-  }  
+    // since we're using the internal pullup resistor
+    // HIGH is released and LOW is pressed
+    if (buttonValue == LOW) {
+      Serial.println("The button is pressed, increasing count.");
+      count++;
+      mqtt.beginMessage(countTopic);
+      mqtt.print(count); 
+      mqtt.endMessage();
+    } else {
+      Serial.println("The button is released");      
+    }
+    previousButtonValue = buttonValue;
+  }
 }
 
 void connectWiFi() {
@@ -123,6 +123,10 @@ void connectMQTT() {
     }
   }
 
+  mqtt.beginMessage("presence/connected/" + DEVICE_ID);
+  mqtt.print(DEVICE_ID); 
+  mqtt.endMessage();
+  
   mqtt.subscribe(ledTopic);
   Serial.println("connected.");
 }
@@ -138,10 +142,23 @@ void messageReceived(int messageSize) {
   String topic = mqtt.messageTopic();
   String payload = mqtt.readString();
   Serial.println("incoming: " + topic + " - " + messageSize + " bytes ");
+  payload.trim();
   Serial.println(payload);
   if (payload.equalsIgnoreCase("ON")) {
-    digitalWrite(ledPin, HIGH);
+    analogWrite(ledPin, 255);  // need analog write for older firmware
   } else if (payload.equalsIgnoreCase("OFF")) {
-    digitalWrite(ledPin, LOW);    
-  } 
+    analogWrite(ledPin, LOW);    
+  } else {    
+    // see if we have a brightness value
+    int percent = payload.toInt();
+    // check the range
+    if (percent < 0) { 
+      percent = 0; 
+    } else if (percent > 100) { 
+      percent = 100; 
+    }
+    // map brightness of 0 to 100 to 1 byte value 0x00 to 0xFF
+    int brightness = map(percent, 0, 100, 0, 255);
+    analogWrite(ledPin, brightness);
+  }
 }

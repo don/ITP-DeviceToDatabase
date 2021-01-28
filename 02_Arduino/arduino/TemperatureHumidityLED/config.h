@@ -1,9 +1,9 @@
-const char WIFI_SSID[] = "";
-const char WIFI_PASSWORD[] = "";
+const char WIFI_SSID[] = "devicenet";
+const char WIFI_PASSWORD[] = "random-token";
 
-const char MQTT_BROKER[] = "";
+const char MQTT_BROKER[] = "dev2db.com";
 const int MQTT_PORT = 8883;
-const char MQTT_USER[] = "";
-const char MQTT_PASSWORD[] = "";
+const char MQTT_USER[] = "samantha";
+const char MQTT_PASSWORD[] = "secret";
 
-const String DEVICE_ID = "";
+const String DEVICE_ID = "device_00";
