@@ -30,6 +30,7 @@ In this module, you will publish temperature and humidity data using HTTP. We wi
 
 ## Server
 
+1. Download and install Node.js 14.15.4 LTS from https://nodejs.org/en/
 1. Open a command prompt or terminal
 1. Navigate to the server directory under 02_Arduino
 1. cd ITP_DeviceToDatabase/02_Arduino/server
@@ -75,10 +76,16 @@ Curl can also be used to fetch data
 
     curl -v 10.0.1.2:3000
 
+## Powershell
+
+Windows users can use Powershell to post data to the server
+
+    Invoke-WebRequest -Uri http://192.168.86.32:3000 -Method POST -Body message="Hello from Powershell" -UseBasicParsing
+
 
 ## Authenticating users and devices
 
-Anyone can connect and post data to the server. Typically a server will require users and devices to login with a username and password. The next version, server3.js use basic authentication to authenticate clients.
+Anyone can connect and post data to the server. Typically a server will require users and devices to login with a username and password. The next version, server3.js use basic authentication to authenticate clients. Stop server2.js using Control+C.  Start server3.
 
     node server3.js
 
@@ -88,14 +95,14 @@ Request from HttpClient will begin to fail with 401 when you start the new serve
 1. Switch to the config.h tab
     1. Update WiFi ssid and password
     1. Add the laptop's IP address
-    1. Add a http user and password
+    1. Add a http user and password (Look at the user and passwords in server3.js source code.)
     1. Add your device id
 1. Deploy the code the Arduino _Sketch -> Upload_
 1. Open the serial monitor to view the data _Tools -> Serial Monitor_
 
 What happens now when you visit http://localhost:3000 in a web browser?
 
-You can add and modify users and passwords in server3.js. Restart the server after saving edits.
+You can add and modify the users and passwords in server3.js. Restart the server after saving edits.
 
 ## Encryption
 
