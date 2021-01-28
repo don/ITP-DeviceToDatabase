@@ -16,7 +16,7 @@ app.post("/", function (request, response) {
   data.remoteAddress = remoteAddress;
   
   console.log(data);
-  response.send();
+  response.send("OK");
 });
 
 // listen for requests :)
