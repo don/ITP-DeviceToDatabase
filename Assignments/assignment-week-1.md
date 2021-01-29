@@ -6,8 +6,5 @@
  * Set up your laptop and Arduino for week 2
     * [Exercise 1: Development Environment](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise1.md)
     * [Exercise 2: Assemble the Hardware](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise2.md)
-    * If run into problems, email me so we can get them sorted out before class
+    * If you run into problems, email me so we can get them sorted out before class
  * Email me a photo of your Arduino hardware once it's built 
-
-
- 
