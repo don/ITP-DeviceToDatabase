@@ -7,8 +7,8 @@ Watch [Welcome to SQL](https://www.khanacademy.org/computing/computer-programmin
 ## Review
 
 Review the exercises we did in class. Ensure that:
- * Your hardware is setup. ([Exercise 2](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise3.md)
- * Your Arduino Nano 33 can connect to the internet. ([Network Test](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise2.md#network-test)))
+ * Your hardware is setup. ([Exercise 2](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise3.md))
+ * Your Arduino Nano 33 can connect to the internet. ([Network Test](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise2.md#network-test))
  * You can send sensor data via HTTP. ([Exercise 3](https://github.com/don/ITP-DeviceToDatabase/blob/main/02_Arduino/exercises/exercise3.md))
 
 ## Sending data with MQTT
