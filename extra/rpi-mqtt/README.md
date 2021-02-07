@@ -25,7 +25,11 @@ Wire the hardware.
 
 For the DHT22, run 3.3v and ground to DHT22. Add a 10kΩ resistor between 3.3v and the DHT22 output pin. Connect pin 4 on the Raspberry Pi to the DHT22 ouput.
 
+![DHT22 wired to the raspberry py](pi-dht22.jpg)
+
 For the SHT31, run 3.3v, ground to the sensor. Connect SDA and SLC to the Raspberry Pi.
+
+![SHT31 wired to the raspberry pi](pi-sht31.jpg)
 
 For the LED, connect pin 18 to the positive lead (anode) of the LED. Connect a 220Ω or 330Ω ohm resistor to the negative lead (cathode) of the LED. Connect the resistor to a ground pin on the Raspberry Pi.
 
