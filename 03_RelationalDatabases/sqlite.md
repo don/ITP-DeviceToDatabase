@@ -10,7 +10,7 @@ SQLite is included with macos. Windows users should download **sqlite-tools-win3
 
 Export data some data from Postgres to create a SQLite database.
 
-	psql -h pg.itpdtd.com -U xxx
+	psql -h pg.dev2db.com -U xxx
 	\c farm
 	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
 	\q
@@ -221,7 +221,7 @@ Create a new SQLite database with data from the ITP database. These steps are al
 
 Export data some data from Postgres to create a SQLite database.
 
-	psql -h pg.itpdtd.com -U xxx
+	psql -h pg.dev2db.com -U xxx
 	\c itp
 	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
 	\q

@@ -72,9 +72,9 @@ Windows users should download the PostgreSQL 12 installer from EnterpriseDB http
 
 The `psql` application runs from the command line. Open a new terminal. Spotlight search for Terminal or in Finder open Applications -> Utilities and double click on Terminal.
 
-The database server is specified using the host, `-h` flag and your user name with `-U`. Try `psql --help` or `man psql` from more details about the command. Replace `xx` in this command with your username.
+The database server is specified using the host, `-h` flag and your user name with `-U`. Try `psql --help` or `man psql` from more details about the command. Replace `maggie` in this command with your username.
 
-    psql -h pg.itpdtd.com -U xx
+    psql -h pg.dev2db.com -U maggie
 
 ![screenshot psql connect](img/psql-connect.png)
 
@@ -114,7 +114,7 @@ Notice that id and recorded_at are both populated in the row that was inserted. 
 Inserts some additional records.
 
     INSERT INTO mqtt_message (topic, payload) VALUES ('test', 'hi');
-    INSERT INTO mqtt_message (topic, payload) VALUES ('itp/device12/temperature', 72.4);
+    INSERT INTO mqtt_message (topic, payload) VALUES ('itp/device_12/temperature', 72.4);
 
 ![screenshot psql insert more records](img/insert-more-records.png)
 

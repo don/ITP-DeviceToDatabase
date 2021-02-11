@@ -1,8 +1,10 @@
 Addition SQL examples using the `itp` database
 
-    psql -h pg.itpdtd.com -U xx
+    psql -h pg.dev2db.com -U xx
     \c itp
     set timezone TO 'America/New_York';
+
+You can set the timezone to 'Asia/Shanghai' or 'Asia/Seoul' to see local times, but use 'America/New_York' here to compare the results.
 
 Use `interval` to get data within a time frame. Select records that arrived in the last 30 seconds
 
