@@ -6,9 +6,9 @@ Create a new DigitalOcean virtual machine (or other VM.) I chose Ubuntu 20.04 LT
  * Add a ssh key for logging in
  * hostname: influx
 
-I have DigitalOcean running DNS for the itpdtd.com domain, so I set up a new domain record for influx.itpdtd.com pointing to the new VM.
+I have DigitalOcean running DNS for the dev2db.com domain, so I set up a new domain record for influx.dev2db.com pointing to the new VM.
 
-Since I set up my SSH key when I created the machine, I can ssh into root@influx.itpdtd.com
+Since I set up my SSH key when I created the machine, I can ssh into root@influx.dev2db.com
 
     ssh root@influx.dev2db.com
 
