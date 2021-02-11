@@ -47,7 +47,9 @@ How do you get access to a database? We need a client.
 
 ### Clients
 
-Postgres has a command line client `psql`. We'll start there. There are also GUI clients like [pgAdmin](https://pgadmin.org). There are more generic database tools like [JetBrains DataGrip](https://www.jetbrains.com/datagrip/) and lots of open source database tools. JetBrains makes excellent tools and they have [free licenses for students](https://www.jetbrains.com/student/).
+Postgres has a command line client `psql`. We'll start there. There are also GUI clients like [pgAdmin](https://pgadmin.org). There are more generic database tools like [JetBrains DataGrip](https://www.jetbrains.com/datagrip/) and lots of open source database tools. JetBrains makes excellent tools and they have [free licenses for students](https://www.jetbrains.com/student/). 
+
+[TablePlus](https://tableplus.com/) database client for Mac and Windows that has support for PostgreSQL.
 
 ### psql
 
@@ -114,7 +116,7 @@ Notice that id and recorded_at are both populated in the row that was inserted. 
 Inserts some additional records.
 
     INSERT INTO mqtt_message (topic, payload) VALUES ('test', 'hi');
-    INSERT INTO mqtt_message (topic, payload) VALUES ('itp/device_12/temperature', 72.4);
+    INSERT INTO mqtt_message (topic, payload) VALUES ('itp/device12/temperature', 72.4);
 
 ![screenshot psql insert more records](img/insert-more-records.png)
 
@@ -123,6 +125,8 @@ Run the select query again to view all the records.
     SELECT * FROM mqtt_message;
 
 ![screenshot psql select after insert more records](img/select-2.png)
+
+Try in insert some records on your own. Then select to view the records.
 
 Now that you have learned to insert data into the database manually, we want to automatically insert every MQTT message into the table. There is a Node.js program running on the server the that subscribes to all MQTT topics and inserts the data into the `mqtt_messages` table in the `itp` database. 
 
@@ -258,7 +262,7 @@ We can include the min and max for each device in one query.
 We can also limit our queries by time.
 
     SELECT * FROM sensor_data 
-        WHERE recorded_at BETWEEN '2020-02-14' AND '2020-02-15';
+        WHERE recorded_at BETWEEN '2021-02-10' AND '2021-02-11';
 
 ![screenshot query using where date between](img/where-between.png)
 
@@ -274,7 +278,7 @@ Coordinated Universal Time(UTC) is a way to store time without timezones and day
 
 Fortunately we can tell `psql` what what time zone we are in and it will convert dates for us. This only effects how the data is *displayed*, not how it's stored.
 
-    set timezone='EST';
+    set timezone='America/New_York';
     show timezone;
 
 ![screenshot showing setting timezone to EST](img/set-timezone.png)
@@ -287,9 +291,11 @@ Fortunately we can tell `psql` what what time zone we are in and it will convert
 OK, back to querying. Now that we set the timezone in our client, dates are converted to EST before they are shown to us. Notice the `-05` at the end of the timestamp `2019-02-08 15:35:22.474-05`. We're seeing different dates in our result set because the dates in the BETWEEN clause are also treated as EST.
 
     SELECT * FROM sensor_data 
-        WHERE recorded_at BETWEEN '2020-02-14' AND '2020-02-15';
+        WHERE recorded_at BETWEEN '2021-02-10' AND '2020-02-11';
 
 ![screenshot showing dates in EST](img/dates-in-est.png)
+
+Instead of America/New_York you could set the timezone to Asia/Shanghai or Asia/Seoul.
 
 The database stores dates in UTC. Dates can be converted to a local timezone before being displayed to the user. Always include a timezone component in your timestamps so the conversion happens correctly.
 
