@@ -1,6 +1,6 @@
 ## Arduino
 
-Ensure that your Arduino is running and publishing temperature and humidity data to the MQTT broker dev2db.com.
+Ensure that your Arduino is running and publishing temperature and humidity data to the MQTT broker dev2db.com. Keep your device running so we can collect data until the next class. You don't need to send data every 10 seconds. You can increase the publish interval to something like every 1, 2, or 5 minutes.
 
 | Measurement   | Unit          |
 | ------------- | ------------- |
