@@ -69,5 +69,6 @@ INSERT INTO device (name, person_id) SELECT 'device_02', id FROM person WHERE na
 INSERT INTO device (name, person_id) SELECT 'device_03', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_04', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_05', id FROM person WHERE name = 'Don';
+INSERT INTO device (name, person_id) SELECT 'device_06', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_27', id FROM person WHERE name = 'Jingxi';
 
