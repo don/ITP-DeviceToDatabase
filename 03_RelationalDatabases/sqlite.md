@@ -37,9 +37,13 @@ Import the CSV data into a temporary table
 	.mode csv
 	.import /tmp/sensor_data.csv data_temp
 	
-The import created a new table, but all the column types are text;
+The import created a new table, but all the column types are text
 
 	.schema data_temp
+	
+Compare this to the schema for sensor_data 
+
+	.schema sensor_data
 	
 Use a query to move the data into the sensor table. Note that we're appending :00 onto the date string. Dates in the CSV file ended with +00 for the timezone. SQLite is expecting +00:00.
 
