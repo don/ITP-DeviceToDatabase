@@ -74,13 +74,13 @@ Most of the queries we used for PostgreSQL will work here
 
 For queries that use date functions, you'll need to make some adjustments. Most of these examples use strftime, but there are other [date functions](https://www.sqlite.org/lang_datefunc.html) available. 
 
-Here's a PostgreSQL query that gets the min, max, and average temperature by day in December 2019. It won't work in SQLite since the recorded_at timestamp is being cast to a date with ::date.
+Here's a PostgreSQL query that gets the min, max, and average temperature by day in December 2020. It won't work in SQLite since the recorded_at timestamp is being cast to a date with ::date.
 
 	SELECT recorded_at::date as day, device, 
 	    max(reading), min(reading), round(avg(reading), 2) as avg
 	    FROM sensor_data
 	    WHERE measurement = 'temperature'
-	    AND recorded_at BETWEEN '2018-12-01' and '2018-12-31'
+	    AND recorded_at BETWEEN '2020-12-01' and '2020-12-31'
 	    GROUP BY day, device;
 
 For SQLite we can use `strftime` to convert the timestamp to a date.
@@ -89,7 +89,7 @@ For SQLite we can use `strftime` to convert the timestamp to a date.
 	    max(reading), min(reading), round(avg(reading), 2) as avg
 	    FROM sensor_data
 	    WHERE measurement = 'temperature'
-	    AND recorded_at BETWEEN '2018-12-01' and '2018-12-31'
+	    AND recorded_at BETWEEN '2020-12-01' and '2020-12-31'
 	    GROUP BY day, device;
 
 Alternately the `date` function can be used in place of `strftime`. These queries work and produce valid data for UTC timezones.
@@ -98,7 +98,7 @@ Alternately the `date` function can be used in place of `strftime`. These querie
 	    max(reading), min(reading), round(avg(reading), 2) as avg
 	    FROM sensor_data
 	    WHERE measurement = 'temperature'
-	    AND recorded_at BETWEEN '2018-12-01' and '2018-12-31'
+	    AND recorded_at BETWEEN '2020-12-01' and '2020-12-31'
 	    GROUP BY day, device;
 	
 If we want the SQLite values to match the PostgreSQL results, we need to convert the UTC date to localtime for display. We also need to convert the local dates to UTC for the BETWEEN comparison.
@@ -107,7 +107,7 @@ If we want the SQLite values to match the PostgreSQL results, we need to convert
 	    max(reading), min(reading), round(avg(reading), 2) as avg
 	    FROM sensor_data
 	    WHERE measurement = 'temperature'
-	    AND recorded_at BETWEEN datetime('2018-12-01', 'utc') and datetime('2018-12-31', 'utc')
+	    AND recorded_at BETWEEN datetime('2020-12-01', 'utc') and datetime('2020-12-31', 'utc')
 	    GROUP BY day, device;
 		
 Here's another PostgreSQL query that groups readings into 15 minute buckets
@@ -117,7 +117,7 @@ Here's another PostgreSQL query that groups readings into 15 minute buckets
 	    FROM sensor_data 
 	    WHERE measurement = 'temperature' 
 	    AND device = 'office'
-	    AND recorded_at BETWEEN '2018-12-10T12:00:00' and '2018-12-10T14:00:00' 
+	    AND recorded_at BETWEEN '2020-12-10T12:00:00' and '2020-12-10T14:00:00' 
 	    GROUP BY minute_15, device;
 		
 For SQLite, we use `(strftime('%s', recorded_at)` to get the unix timestamp instead of `extract(EPOCH FROM recorded_at)::integer`. We also need to use datetime to turn the epoch back to a string version of local time. Once again the datetime used in the BETWEEN clause are converted to UTC.
@@ -127,7 +127,7 @@ For SQLite, we use `(strftime('%s', recorded_at)` to get the unix timestamp inst
 	    FROM sensor_data 
 	    WHERE measurement = 'temperature' 
 	    AND device = 'office'
-	    AND recorded_at BETWEEN datetime('2018-12-10 12:00', 'utc') AND datetime('2018-12-10 14:00', 'utc')
+	    AND recorded_at BETWEEN datetime('2020-12-10 12:00', 'utc') AND datetime('2020-12-10 14:00', 'utc')
 	    GROUP BY minute_15, device;
 		
 ## Creating views
@@ -162,36 +162,36 @@ An alternate way to create this view is to join the sensor_data table to itself
 		
 ## More queries
 
-Here's the process for building up a query from the environment view
+Here's the process for building up a query from the environment view. I want to show the data for July 14th, 2020 in a nice format. Typically writing a complex query is iterative. Start with a basic query and keep revising until you get what you need.
 
-	SELECT * FROM environment WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15' limit 10;
+	SELECT * FROM environment WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15' limit 10;
 
 Get the average temperature and humidity by device per hour
 
 	SELECT strftime('%Y-%m-%d %H', recorded_at), device, avg(temperature), avg(humidity)
 		FROM environment 
-		WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15'
+		WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15'
 		GROUP BY 1, 2;
 
 Add :00 to the time and round off the averages
 
 	SELECT strftime('%Y-%m-%d %H:00', recorded_at), device, round(avg(temperature),2), round(avg(humidity),1)
 		FROM environment
-		WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15'
+		WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15'
 		GROUP BY 1, 2;
 		
 Alias columns and move hour to a separate column
 
 	SELECT strftime('%Y-%m-%d', recorded_at) as date, strftime('%H', recorded_at) as hour, device, round(avg(temperature),2) as temperature, round(avg(humidity),1) as humidity
 		FROM environment
-		WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15'
+		WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15'
 		GROUP BY 1, 2, 3;
 		
 Use date instead of strftime. Use names for group by instead of position, Order by device, date, and hour.
 
 	SELECT date(recorded_at) as date, strftime('%H', recorded_at) as hour, device, round(avg(temperature),2) as temperature, round(avg(humidity),1) as humidity
 		FROM environment
-		WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15'
+		WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15'
 		GROUP BY date, hour, device
 		ORDER by device, date, hour;
 
@@ -199,7 +199,7 @@ Update the results to display localtime, but now we can see date is incorrect
 
 	SELECT date(recorded_at, 'localtime') as date, strftime('%H', recorded_at, 'localtime') as hour, device, round(avg(temperature),2) as temperature, round(avg(humidity),1) as humidity
 		FROM environment
-		WHERE recorded_at BETWEEN '2018-07-14' and '2018-07-15'
+		WHERE recorded_at BETWEEN '2020-07-14' and '2020-07-15'
 		GROUP BY date, hour, device
 		ORDER by device, date, hour;
 		
@@ -207,7 +207,7 @@ Adjust the dates in the BETWEEN condition in the WHERE clause. These dates need 
 
 	SELECT date(recorded_at, 'localtime') as date, strftime('%H', recorded_at, 'localtime') as hour, device, round(avg(temperature),2) as temperature, round(avg(humidity),1) as humidity
 		FROM environment
-		WHERE recorded_at BETWEEN datetime('2018-07-14', 'utc') AND datetime('2018-07-15', 'utc')
+		WHERE recorded_at BETWEEN datetime('2020-07-14', 'utc') AND datetime('2020-07-15', 'utc')
 		GROUP BY date, hour, device
 		ORDER by device, date, hour;
 		
