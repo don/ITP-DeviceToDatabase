@@ -8,14 +8,18 @@ SQLite is included with macos. Windows users should download **sqlite-tools-win3
 
 ## Creating a database
 
-Export data some data from Postgres to create a SQLite database.
+Export some data from Postgres to create a SQLite database.
 
-	psql -h pg.dev2db.com -U xxx
+	psql -h pg.dev2db.com -U your-username-here
 	\c farm
-	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
+	\copy (SELECT * FROM sensor_data WHERE recorded_at > '2019-12-31') to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
 	\q
 	
-Create a new database
+Note that we're exporting about 2 million rows so the data set is more manageable. If you want to export all 7 million rows you can use:
+
+	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
+
+Create a new SQLite database
 
 	sqlite3 farm.db
 	
