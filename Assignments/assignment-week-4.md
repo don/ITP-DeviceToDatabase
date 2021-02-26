@@ -7,7 +7,7 @@
 
 ## Assignment: Review
 
-Review the details of the Postgres queries we covered in class. It's recommended that run the queries against the databases to get a better understanding of how they work. Modify the queries to get different data.
+Review the details of the Postgres queries we covered in class. I recommended that you run the queries against the databases to get a better understanding of how they work. Modify the queries to get different data.
 
 * [PostgreSQL Sensor Data Queries](postgres2.md)
 * [PostgreSQL Additional Queries](postgres3.md)
