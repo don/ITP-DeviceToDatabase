@@ -24,7 +24,7 @@ Review the SQLite material we covered in class. Ensure that you're able to creat
 
    a. When did the outside sensor break and stop sending data? <br/>
    b. Show the min and max temperature in the root cellar by year <br/>
-   c. What was the lowest temperature recorded 2018? <br/>
+   c. What was the lowest temperature recorded in 2018? <br/>
 
   Challenge: Which sensor recorded the lowest temperature 2018 and when? Hint: you need a subquery.
 
