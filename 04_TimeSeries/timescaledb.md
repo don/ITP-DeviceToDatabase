@@ -18,14 +18,15 @@ Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreS
 
 ## Hypertables
 
-Once the extension is installed we can create Postgres table and convert it to a TimescaleDB hypertable. Hypertables are stored differently and more efficiently for time series, but most of it is transparent to us. For the most part it look like a regular table.
+Once the timescale extension is installed, we can create a Postgres table and convert it to a TimescaleDB hypertable. Hypertables have a different way to store data on disk that is more efficient for time series. These changes are good for performance and mostly transparent to users. Hypertables, for the most part, look like a regular tables.
 
 ---
 
-**These are the steps used to create the tables in tsfarm. You don't need to recreate the tables.** <br/>
-**This section is for information only.**
+** This section is for information only. The sensor_data table already exists in tsfarm.**
 
 ---
+
+These are the steps used to create and populate the sensor_data hypertable in tsfarm. **You don't need to recreate the tables.**
 
 Create a new timescaledb farm database
 
