@@ -62,9 +62,11 @@ Import the data into timescale
     \COPY sensor_data(device, measurement, reading, recorded_at) FROM '/tmp/farm.csv' DELIMITER ',' CSV HEADER;
     exit
 
-** End of information only section **
+---
+**End of information only section**
+---
 
-Each of you has database on the timescale server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
+Each student has database on the timescale server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
 
 Create a standard table
 
@@ -83,11 +85,9 @@ Execute the create hypertable command on the new table. Pass tha table name and 
 
 All the queries we did for with PostgreSQL in [week 4](../03_RelationalDatabases) should work here.
 
-TimescaleDB add additional functions.
+The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in PosgreSQL. The TimescaleDB specific functions are marked with `TSDB Function`.
 
-The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in Posgres. The TimescaleDB specific ones are marked with `TSDB Function`.
-
-The `time_bucket` function allows us to group data into time intervals. Previous with Postgres we used `extract` for this.
+The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previous with PostgreSQL we used the `extract` function to create group dates and times from recorded_at.
 
 Connect
 
@@ -141,7 +141,7 @@ Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct
 
 1 hour
 
-   SELECT time_bucket('1 hour', recorded_at) AS one_hour,
+    SELECT time_bucket('1 hour', recorded_at) AS one_hour,
             device, min(reading), max(reading),
             round(avg(reading)::numeric, 2) as avg
         FROM sensor_data
@@ -188,7 +188,7 @@ Output
 
     tsfarm=> 
 
-See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/latest/using-timescaledb/reading-data). The have good examples of using SQL to aggregate data. Many of the examples run in Postgres or Timescale. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/latest/using-timescaledb/reading-data).
+See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/latest/using-timescaledb/reading-data). The have good examples of using SQL to aggregate data. Many of the examples run in PostgreSQL or TimescaleDB. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/latest/using-timescaledb/reading-data).
 
     tsfarm=> \d conditions
                             Table "public.conditions"
@@ -201,8 +201,8 @@ See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/
     Indexes:
         "conditions_time_idx" btree ("time" DESC)
     Triggers:
-        ts_insert_blocker BEFORE INSERT ON conditions FOR EACH ROW EXECUTE PROCEDURE _timescaledb_internal.insert_blocker()
-    Number of child tables: 163 (Use \d+ to list them.)
+        ts_insert_blocker BEFORE INSERT ON conditions FOR EACH ROW EXECUTE FUNCTION _timescaledb_internal.insert_blocker()
+    Number of child tables: 270 (Use \d+ to list them.)
 
     tsfarm=> 
     
