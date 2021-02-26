@@ -14,7 +14,7 @@ This installs both the database and the command line tools.
 
 Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreSQL server for timescale.
 
-    psql -h timescale.itpdtd.com -U xx 
+    psql -h timescale.dev2db.com -U your-user-name 
 
 ## Hypertables
 
@@ -41,7 +41,7 @@ Create a table for farm dataset. Note that the `id` column has been removed.
         recorded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
-Install the TimescaleDB extension
+Enable the TimescaleDB extension. This must be run as the postgres user in the tsfarm database.
 
     CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
@@ -49,13 +49,34 @@ Create a hypertable for sensor_data. The function takes the table name and the t
 
     SELECT create_hypertable('sensor_data', 'recorded_at');
 
-The sensor data was exported from pg.itpdtd.com using 
+The sensor data was exported from pg.dev2db.com using 
 
+    psql -h pg.dev2db.com -U don farm
     \COPY (select device, measurement, reading, recorded_at from sensor_data) TO '/tmp/farm.csv' DELIMITER ',' CSV HEADER;
+    exit
 
 Import the data into timescale
 
+    psql -h timescale.dev2db.com -U don tsfarm
     \COPY sensor_data(device, measurement, reading, recorded_at) FROM '/tmp/farm.csv' DELIMITER ',' CSV HEADER;
+    exit
+
+** End of information only section **
+
+Each of you has database on the timescale server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
+
+Create a standard table
+
+    CREATE TABLE conditions (
+        time        TIMESTAMPTZ       NOT NULL,
+        location    TEXT              NOT NULL,
+        temperature DOUBLE PRECISION  NULL
+    );
+
+Execute the create hypertable command on the new table. Pass tha table name and the time column to create_hypertable.
+
+    SELECT create_hypertable('conditions', 'time');
+
 
 ## Queries
 
@@ -63,13 +84,13 @@ All the queries we did for with PostgreSQL in [week 4](../03_RelationalDatabases
 
 TimescaleDB add additional functions.
 
-The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/v1.6/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in Posgres. The TimescaleDB specific ones are marked with `TSDB Function`.
+The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in Posgres. The TimescaleDB specific ones are marked with `TSDB Function`.
 
 The `time_bucket` function allows us to group data into time intervals. Previous with Postgres we used `extract` for this.
 
 Connect
 
-    psql -h timescale.itpdtd.com -U xx 
+    psql -h timescale.dev2db.com -U your-user-name  
 
 Set the timezone
 
@@ -95,13 +116,14 @@ Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct
 
 12 hour
 
-    SELECT time_bucket('12 hour', time::timestamp) AS twelve_hour,
-            location, min(temperature), max(temperature),
-            round(avg(temperature)::numeric, 2) as avg
-        FROM conditions
-        WHERE time BETWEEN '2018-12-01' and '2018-12-03'
-        AND location IN ('office')
-        GROUP BY twelve_hour, location
+    SELECT time_bucket('12 hours', recorded_at::timestamp) AS twelve_hour,
+            device, min(reading), max(reading),
+            round(avg(reading)::numeric, 2) as avg
+        FROM sensor_data
+        WHERE recorded_at BETWEEN '2018-12-10' and '2018-12-11'
+        AND device IN ('office')
+        AND measurement = 'temperature'
+        GROUP BY twelve_hour, device
         ORDER BY twelve_hour;
 
 4 hour
@@ -153,28 +175,28 @@ Output
     tsfarm->     ORDER BY fifteen_minutes;
         fifteen_minutes     | device |  min  |  max  |  avg  
     ------------------------+--------+-------+-------+-------
-    2018-12-10 12:00:00-05 | office | 68.36 | 68.54 | 68.48
-    2018-12-10 12:15:00-05 | office | 68.72 | 68.90 | 68.81
-    2018-12-10 12:30:00-05 | office | 69.08 | 69.26 | 69.17
-    2018-12-10 12:45:00-05 | office | 69.62 | 69.62 | 69.62
-    2018-12-10 13:00:00-05 | office | 69.80 | 69.98 | 69.86
-    2018-12-10 13:15:00-05 | office | 69.98 | 70.34 | 70.16
-    2018-12-10 13:30:00-05 | office | 70.52 | 70.88 | 70.70
-    2018-12-10 13:45:00-05 | office | 71.06 | 71.24 | 71.12
+     2018-12-10 12:00:00-05 | office | 68.36 | 68.54 | 68.48
+     2018-12-10 12:15:00-05 | office | 68.72 | 68.90 | 68.81
+     2018-12-10 12:30:00-05 | office | 69.08 | 69.26 | 69.17
+     2018-12-10 12:45:00-05 | office | 69.62 | 69.62 | 69.62
+     2018-12-10 13:00:00-05 | office | 69.80 | 69.98 | 69.86
+     2018-12-10 13:15:00-05 | office | 69.98 | 70.34 | 70.16
+     2018-12-10 13:30:00-05 | office | 70.52 | 70.88 | 70.70
+     2018-12-10 13:45:00-05 | office | 71.06 | 71.24 | 71.12
     (8 rows)
 
     tsfarm=> 
 
-See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/v1.6/using-timescaledb/reading-data). The have good examples of using SQL to aggregate data. Many of the examples run in Postgres or Timescale. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/v1.6/using-timescaledb/reading-data).
+See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/latest/using-timescaledb/reading-data). The have good examples of using SQL to aggregate data. Many of the examples run in Postgres or Timescale. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/latest/using-timescaledb/reading-data).
 
     tsfarm=> \d conditions
                             Table "public.conditions"
-    Column    |           Type           | Collation | Nullable | Default 
+       Column    |           Type           | Collation | Nullable | Default 
     -------------+--------------------------+-----------+----------+---------
-    time        | timestamp with time zone |           | not null | 
-    location    | text                     |           | not null | 
-    temperature | double precision         |           |          | 
-    humidity    | double precision         |           |          | 
+     time        | timestamp with time zone |           | not null | 
+     location    | text                     |           | not null | 
+     temperature | double precision         |           |          | 
+     humidity    | double precision         |           |          | 
     Indexes:
         "conditions_time_idx" btree ("time" DESC)
     Triggers:
@@ -183,6 +205,6 @@ See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/
 
     tsfarm=> 
     
-The TimescaleDB documentation for [advanced analytic queries](https://docs.timescale.com/v1.6/using-timescaledb/reading-data#advanced-analytics) has lots of examples that work in TimescaleDB. Some examples also work with PostgreSQL.
+The TimescaleDB documentation for [advanced analytic queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics) has lots of examples that work in TimescaleDB. Some examples also work with PostgreSQL.
 
 &copy; 2019 Don Coleman
