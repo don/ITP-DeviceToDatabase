@@ -46,7 +46,7 @@ Enable the TimescaleDB extension. This must be run as the postgres user in the t
 
     CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
-Create a hypertable for sensor_data. The function takes the table name and the time column.
+Convert sensor_data to a hypertable. The create_hypertable function takes the table name and the time column.
 
     SELECT create_hypertable('sensor_data', 'recorded_at');
 
