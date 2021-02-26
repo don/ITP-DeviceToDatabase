@@ -22,7 +22,7 @@ Once the timescale extension is installed, we can create a Postgres table and co
 
 ---
 
-** This section is for information only. The sensor_data table already exists in tsfarm.**
+**This section is for information only. The sensor_data table already exists in tsfarm.**
 
 ---
 
