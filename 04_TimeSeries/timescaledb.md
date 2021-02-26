@@ -87,7 +87,7 @@ All the queries we did for with PostgreSQL in [week 4](../03_RelationalDatabases
 
 The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in PosgreSQL. The TimescaleDB specific functions are marked with `TSDB Function`.
 
-The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previous with PostgreSQL we used the `extract` function to create group dates and times from recorded_at.
+The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previously with PostgreSQL we used the `extract` function to extract dates and time parts from the recorded_at column to use for group by.
 
 Connect
 
