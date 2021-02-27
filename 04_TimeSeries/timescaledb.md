@@ -41,7 +41,7 @@ Convert sensor_data to a hypertable. The `create_hypertable` function takes the 
 
 See [creating hypertables](https://docs.timescale.com/latest/getting-started/creating-hypertables) for more details. 
 
-See the [timescale setup](../setup/timescaledb.md) instructions for more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
+The [timescale setup](../setup/timescaledb.md) instructions have more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
 
 ## Queries
 
