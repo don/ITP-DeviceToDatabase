@@ -35,13 +35,13 @@ Create a new sensor_data table in timescale, using the SQL CREATE syntax. Note t
         recorded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
-Convert sensor_data to a hypertable. The `create_hypertable` function takes the table name and the time column.
+Convert the sensor_data to a hypertable. The `create_hypertable` function takes the table name and the time column.
 
     SELECT create_hypertable('sensor_data', 'recorded_at');
 
 See [creating hypertables](https://docs.timescale.com/latest/getting-started/creating-hypertables) for more details. 
 
-See the [timescale setup](../setup/timescaledb.md) instructions for more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
+The [timescale setup](../setup/timescaledb.md) instructions have more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
 
 ## Queries
 
