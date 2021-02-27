@@ -38,7 +38,7 @@ Open the `process-mqtt-data` directory in Visual Studio Code, Sublime, or your p
 
 Create a file name `.env` to store environment variables. Since this file contains usernames and passwords it should *not* be commited to version control. Add `.env` to your `.gitignore` file. Your file should look like this.
 
-    MQTT_SERVER=mqtts://user:password@itpdtd.com
+    MQTT_SERVER=mqtts://user:password@dev2db.com
 
 Replace `user` and `password` with your username and password for the MQTT server.
 
@@ -62,21 +62,28 @@ Let's start by reading data from MQTT and printing it to standard output. Create
         console.log(topic, message.toString());
     });
 
-Run the `mqtt-test` and ensure you see MQTT message printed to the console.
+    mqttClient.on('error', (error) => {
+        console.log(error);
+    });
+
+Run the `mqtt-test` and ensure you see MQTT messages printed to the console.
 
     node mqtt-test.js
 
+Sample output
+
+    itp/device_12/temperature 65.30
+    itp/device_12/humidity 40.30
+    itp/device_14/temperature 80.42
+    itp/device_14/humidity 19.00
+    itp/device_06/temperature 44.60
+    itp/device_06/humidity 81.40
+
 ## Log MQTT messages to a File
 
-Now that we can read MQTT messages, let's write them to a file instead of just printing them to the console. Copy `mqtt-test.js` to `mqtt-logger.js`.
+Now that we can read MQTT messages, let's write them to a file instead of just printing them to the console. Create a new file `mqtt-logger.js`. Copy the code from `mqtt-test.js` and paste it into the `mqtt-logger.js` file.
 
-    cp mqtt-test.js mqtt-logger.js
-
-Windows
-
-    copy mqtt-test.js mqtt-logger.js
-
-Open `mqtt-logger.js` in your editor. After the require('dotenv') line add the following code to, require `fs` and create a variable to hold the file name of the log file.
+After the `require('dotenv').config();` line add the following code to, require `fs` and create a variable to hold the file name of the log file.
 
     const fs = require('fs');
     const fileName = './mqtt.log';
@@ -91,6 +98,29 @@ Replace the existing on messages handler with this new function
 
 The [getTime](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime) method get the timestamp from the date in milliseconds since epoch. A tab-delimited string is created using the timestamp, topic, and message. The string is written to the log file with the append flag. Without the append flag, the new data would overwrite the old file.
 
+Your `mqtt-logger.js` file should look like this
+
+    require('dotenv').config();
+    const fs = require('fs');
+    const fileName = './mqtt.log';
+    const mqtt = require('mqtt');
+    const mqttClient = mqtt.connect(process.env.MQTT_SERVER);
+
+    mqttClient.on('connect', () => {
+        console.log('MQTT Connected');
+        mqttClient.subscribe('#');
+    });
+
+    mqttClient.on('message', function (topic, message) {        
+        const timestamp = new Date().getTime();
+        const data = `${timestamp}\t${topic}\t${message}\n`;
+        fs.writeFileSync(fileName, data, { flag: 'a' });
+    });
+
+    mqttClient.on('error', (error) => {
+        console.log(error);
+    });
+
 Start the process
 
     node mqtt-logger.js
@@ -99,9 +129,22 @@ Open a 2nd terminal window and tail the MQTT log to ensure data is being written
 
     tail -f mqtt.log
 
-Windows users should use PowerShell
+Sample output
+
+    1614407069930   itp/device_06/temperature       44.60
+    1614407069947   itp/device_06/humidity  81.70
+    1614407069947   itp/device_16/temperature       73.22
+    1614407069947   itp/device_16/humidity  27.10
+    1614407073207   itp/device_23/temperature       80.42
+    1614407073225   itp/device_23/humidity  33.00
+    1614407073248   itp/device_12/temperature       65.30
+    1614407073264   itp/device_12/humidity  40.50
+
+Windows users should use PowerShell to tail mqtt.log
 
     Get-Content mqtt.log -Wait
+
+### Enhancement
 
 Note that the logger will fail if your MQTT message contains tabs or linefeeds. (This might happen with JSON payloads.) You can add additional code to handle edge cases. Be sure to use payload instead of message when creating the data string.
 
@@ -119,7 +162,7 @@ Note that the logger will fail if your MQTT message contains tabs or linefeeds. 
         fs.writeFileSync(fileName, data, { flag: 'a' });
     });
 
-There are also [many TSV and CSV libraries](https://www.npmjs.com/search?q=tsv) available for node that can make reading and writing delimited files easier.
+There are also [many TSV and CSV libraries](https://www.npmjs.com/search?q=tsv) available for Node.js that can make reading and writing delimited files easier.
 
 # Write MQTT messages to a SQLite Database
 
@@ -346,7 +389,7 @@ You should receive an SMS message with the alert.
 
 ## SMS
 
-How did the SMS message get sent? There is a node script running on itpdtd.com listening for messages on topic `sms/send/+`. It uses [Twilio](http://twilio.com/) to send the text messages. **You do NOT need to create a file with this code.** It is just included for reference.
+How did the SMS message get sent? There is a node script running on dev2db.com listening for messages on topic `sms/send/+`. It uses [Twilio](http://twilio.com/) to send the text messages. **You do NOT need to create a file with this code.** It is just included for reference.
 
     require('dotenv').config();
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
