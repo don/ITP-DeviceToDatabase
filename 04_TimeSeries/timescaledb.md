@@ -20,20 +20,13 @@ Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreS
 
 Once the timescale extension is installed, we can create a Postgres table and convert it to a TimescaleDB hypertable. Hypertables have a different way to store data on disk that is more efficient for time series. These changes are good for performance and mostly transparent to users. Hypertables, for the most part, look like a regular tables.
 
----
+A database administrator, such as the postgres user, must enable the TimescaleDB extension in each database. 
 
-**This section is for information only. The sensor_data table already exists in tsfarm.**
+    CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
----
+Each student has database on the timescale.dev2dc.com server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
 
-These are the steps used to create and populate the sensor_data hypertable in tsfarm. **You don't need to recreate the tables.**
-
-Create a new timescaledb farm database
-
-    CREATE DATABASE tsfarm;
-    \c tsfarm
-
-Create a table for farm dataset. Note that the `id` column has been removed.
+Create a new sensor_data table in timescale, using the SQL CREATE syntax. Note that the `id` column has been removed.
 
     CREATE TABLE sensor_data (
         device VARCHAR(50),      
@@ -42,44 +35,13 @@ Create a table for farm dataset. Note that the `id` column has been removed.
         recorded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
-Enable the TimescaleDB extension. This must be run as the postgres user in the tsfarm database.
-
-    CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
-
-Convert sensor_data to a hypertable. The create_hypertable function takes the table name and the time column.
+Convert sensor_data to a hypertable. The `create_hypertable` function takes the table name and the time column.
 
     SELECT create_hypertable('sensor_data', 'recorded_at');
 
-The sensor data was exported from pg.dev2db.com using 
+See [creating hypertables](https://docs.timescale.com/latest/getting-started/creating-hypertables) for more details. 
 
-    psql -h pg.dev2db.com -U don farm
-    \COPY (select device, measurement, reading, recorded_at from sensor_data) TO '/tmp/farm.csv' DELIMITER ',' CSV HEADER;
-    exit
-
-Import the data into timescale
-
-    psql -h timescale.dev2db.com -U don tsfarm
-    \COPY sensor_data(device, measurement, reading, recorded_at) FROM '/tmp/farm.csv' DELIMITER ',' CSV HEADER;
-    exit
-
----
-**End of information only section**
----
-
-Each student has database on the timescale server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
-
-Create a standard table
-
-    CREATE TABLE conditions (
-        time        TIMESTAMPTZ       NOT NULL,
-        location    TEXT              NOT NULL,
-        temperature DOUBLE PRECISION  NULL
-    );
-
-Execute the create hypertable command on the new table. Pass tha table name and the time column to create_hypertable.
-
-    SELECT create_hypertable('conditions', 'time');
-
+See the [timescale setup](../setup/timescaledb.md) instructions for more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
 
 ## Queries
 
