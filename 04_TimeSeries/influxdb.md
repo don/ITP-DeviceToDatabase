@@ -6,44 +6,43 @@
 
 We use a command line tool to connect to influx, similar to what we do with Postgres using psql. Install InfluxDB on a Mac with Homebrew.
 
-    brew install influxdb
+    brew update
+    brew install influxdb@1.8.4
 
 This installs both the database and the command line tools.
 
-Windows users should download InfluxDB v.1.7.10 from https://dl.influxdata.com/influxdb/releases/influxdb-1.7.10_windows_amd64.zip
-    
-    unzip influxdb-1.7.10_windows_amd64.zip
+Windows users should download InfluxDB v.1.8.4 from https://dl.influxdata.com/influxdb/releases/influxdb-1.8.4_windows_amd64.zip and then unzip influxdb-1.8.4_windows_amd64.zip. Other platforms and versions are available from https://portal.influxdata.com/downloads/.
 
 ## Connecting
 
-The influx cli connect to the server. Pass an empty string as the password argument to have influx prompt for the password.
+The influx command connects to the server. Pass an empty string as the password argument to have influx prompt for the password.
 
-    influx -host influx.itpdtd.com -ssl -username xx -password ''
+    influx -host influx.dev2db.com -ssl -username your-username -password ''
 
 Sample output 
 
-    don@ping ~ % influx -host influx.itpdtd.com -ssl -username don -password ''
+    don@ping ~ % influx -host influx.dev2db.com -ssl -username don -password ''
     password: 
-    Connected to https://influx.itpdtd.com:8086 version 1.7.9
-    InfluxDB shell version: v1.7.9
+    Connected to https://influx.dev2db.com:8086 version 1.8.4
+    InfluxDB shell version: v1.8.4
     > 
     
 Note: Windows users must enter their password on the command line
 
-    influx -host influx.itpdtd.com -ssl -username samantha -password secret
+    influx -host influx.dev2db.com -ssl -username samantha -password secret
 
 If you don't enter or mistype your password, you will still get an influx prompt, but you won't have permissions to do anything
 
-    c:\> influx -host influx.itpdtd.com -ssl
-    Connected to https://influx.itpdtd.com:8086 version 1.7.10
-    InfluxDB shell version: v1.7.9
+    don@ping ~ % influx -host influx.dev2db.com -ssl
+    Connected to https://influx.dev2db.com:8086 version 1.8.4
+    InfluxDB shell version: 1.8.4
     > show databases
-    ERR: unable to parse authentication credentials
+    ERR: authorization failed
     Warning: It is possible this error is due to not setting a database.
     Please set a database with the command "use <database>".
     > use farm
-    ERR: unable to parse authentication credentials
-    DB does not exist!
+    WARN: authorization failed
+    Using database farm
     > 
 
 ## Metadata
@@ -744,11 +743,11 @@ The where clauses can also include regular expressions.
 
 Check out the [documentation on the influxdata website](https://docs.influxdata.com/influxdb) for additional information.
 
- * [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v1.7/concepts/key_concepts/)
- * [Data exploration using InfluxQL](https://docs.influxdata.com/influxdb/v1.7/query_language/data_exploration/)
- * [Influx Query Language documentation](https://docs.influxdata.com/influxdb/v1.7/query_language/)
- * [InfluxQL functions](https://docs.influxdata.com/influxdb/v1.7/query_language/functions/)
- * [Schema exploration using InfluxQL](https://docs.influxdata.com/influxdb/v1.7/query_language/schema_exploration/)
+ * [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v1.8/concepts/key_concepts/)
+ * [Data exploration using InfluxQL](https://docs.influxdata.com/influxdb/v1.8/query_language/data_exploration/)
+ * [Influx Query Language documentation](https://docs.influxdata.com/influxdb/v1.8/query_language/)
+ * [InfluxQL functions](https://docs.influxdata.com/influxdb/v1.8/query_language/functions/)
+ * [Schema exploration using InfluxQL](https://docs.influxdata.com/influxdb/v1.8/query_language/schema_exploration/)
 
 
 &copy; 2019 Don Coleman
