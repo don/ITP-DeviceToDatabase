@@ -38,7 +38,7 @@ Configure postgres to listen on all addreses, not just localhost. Edit **/etc/po
 
 Configure posgres to allow users to login with passwords. Edit **/etc/postgresql/12/main/pg_hba.conf** and add
 
-    hostssl  all all 0.0.0.0/0 md5
+    host  all all 0.0.0.0/0 md5
   
 Restart postgres
 

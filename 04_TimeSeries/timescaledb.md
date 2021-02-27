@@ -1,6 +1,6 @@
 # TimescaleDB
 
-[TimescaleDB](https://www.timescale.com/) is a time series database. TimescaleDB runs as a PosgreSQL extension. 
+[TimescaleDB](https://www.timescale.com/) is a time series database. TimescaleDB runs as a PosgreSQL extension. Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreSQL server for TimescaleDB -- timescale.dev2db.com.
 
 ## Client
 
@@ -12,7 +12,7 @@ This installs both the database and the command line tools.
 
 ## Connecting
 
-Amazon RDS does not support the TimescaleDB extension, so we have a new PostgreSQL server for timescale.
+Connect to TimescaleDB using the psql, TablePlus or any tool that supports PostgreSQL.
 
     psql -h timescale.dev2db.com -U your-user-name 
 
