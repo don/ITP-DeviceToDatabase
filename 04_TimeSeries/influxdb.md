@@ -7,7 +7,7 @@
 We use a command line tool to connect to influx, similar to what we do with Postgres using psql. Install InfluxDB on a Mac with Homebrew.
 
     brew update
-    brew install influxdb@1.8.4
+    brew install influxdb
 
 This installs both the database and the command line tools.
 
