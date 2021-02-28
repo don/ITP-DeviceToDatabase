@@ -40,7 +40,7 @@ Install the [dotenv](https://www.npmjs.com/package/dotenv) library
 
 Dotenv loads application configuration data from a .env file so we can keep passwords and other configuration out of the code. Create a file name `.env` to store the TimescaleDB connection information. Replace `user`, `password` with your TimescaleDB username and password. The database `instance` is the timescale version of itp, `tsitp`.
 
-    TIMESCALE_SERVER=postgresql://user:password@timescale.itpdtd.com:5432/tsitp?ssl=true
+    TIMESCALE_SERVER=postgresql://user:password@timescale.dev2db.com:5432/tsitp
 
 On the first line of `server.js` add the following code
     
@@ -338,25 +338,25 @@ Create new a new file `public/by-device.js`
     // the pie chart, passes in the data and draws it.
     async function drawChart() {
 
-    // Create the data table.
-    const data = new google.visualization.DataTable();
-    data.addColumn('string', 'Device');
-    data.addColumn('number', 'Message Count');
-    const rows = await getMessageCountByDevice();
-    data.addRows(rows);
+        // Create the data table.
+        const data = new google.visualization.DataTable();
+        data.addColumn('string', 'Device');
+        data.addColumn('number', 'Message Count');
+        const rows = await getMessageCountByDevice();
+        data.addRows(rows);
 
-    // Set chart options
-    const options = {
-        title:'Message Count per Device',
-        is3D: true,
-        //sliceVisibilityThreshold: .01,
-        width: 2048,
-        height: 1000
-    };
+        // Set chart options
+        const options = {
+            title:'Message Count per Device',
+            is3D: true,
+            //sliceVisibilityThreshold: .01,
+            width: 2048,
+            height: 1000
+        };
 
-    // Instantiate and draw our chart, passing in some options.
-    const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
+        // Instantiate and draw our chart, passing in some options.
+        const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
     }
 
 ![screenshot of messages by device pie chart](img/message-count-by-device.png)
