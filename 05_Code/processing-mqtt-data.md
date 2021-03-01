@@ -170,69 +170,59 @@ We can use Node.js to save MQTT message into a database. This example uses SQLit
 
 ## SQLite driver
 
-Install the SQLite database driver
+Install the [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) driver with npm.
 
-    npm install sqlite
+    npm install better-sqlite3
 
-## Migrations
+## Database Tables
 
-The sqlite driver supports database [migrations](https://www.npmjs.com/package/sqlite#migrations). Migrations are SQL scripts that are used to automatically create database tables.
+We need two database tables to hold the data from MQTT. One for numeric data and one for text data. Most of the data like temperature and humidity will be numeric, but some data like turning the LED on and off and hex values from the color sensor will text. 
 
-In your project directory, create a new folder named `migrations`. In the migration folder, create a new file named `001-initial-schema.sql`. The 001-initial-schema.sql file needs to contain the following data.
+Create a new file `schema.sql` with the following contents:
 
-    --------------------------------------------------------------------------------
-    -- Up
-    --------------------------------------------------------------------------------
-
-    CREATE TABLE sensor_data (
+    -- table for numeric mqtt data
+    CREATE TABLE IF NOT EXISTS sensor_data (
         device TEXT,
         measurement TEXT,
         reading NUMERIC(9, 2),
         recorded_at TIMESTAMP NOT NULL default current_timestamp
     );
 
-    --------------------------------------------------------------------------------
-    -- Down
-    --------------------------------------------------------------------------------
+    -- table for text mqtt data
+    CREATE TABLE IF NOT EXISTS sensor_data_text (
+        device TEXT,
+        measurement TEXT,
+        reading TEXT,
+        recorded_at TIMESTAMP NOT NULL default current_timestamp
+    );
 
-    DROP TABLE sensor_data;
-
-Your directory structure should look like this:
-
-![screenshot of the directory structure](img/process-mqtt-directory-structure-migrations.png)
-
-Use `CMD + SHIFT + .` to show hidden files in Finder.  Follow these instuctions to [view hidden files on Windows 10](https://support.microsoft.com/en-us/help/4028316/windows-view-hidden-files-and-folders-in-windows-10).
+Notice that the create table statements use `CREATE TABLE IF NOT EXISTS`. This allows us to run the SQL script many time and only create the tables if they are missing.
 
 ## Inserting records with Node.js
 
-Create a new file `insert-test.js`. This is a simple program to make sure we can insert data into the database from node.
+Create a new file `insert-test.js`. This is a simple program to make sure we can insert data into the database from Node.js. Require the libraries, then open the database `example.db` with verbose logging. The first time this is run the database doesn't exist, so it will be created.
 
-    const sqlite = require('sqlite');
-    const database = './test.db'
+    const fs = require('fs');
+    const Database = require('better-sqlite3');
+    const db = new Database('example.db', { verbose: console.log });
 
-Create a function insertRow, that inserts the data into the database. The query uses question marks as paramters. When we call `db.run`, the query and the values are passed to the database engine. You should use placeholders in queries because the input is santized. If you build SQL by concatenating stirngs, it puts you at risk for [SQL Injection attacks](https://github.com/mapbox/node-sqlite3/issues/57).
+Read the schema.sql file, and run it to create the tables in the database.
 
-    async function insertRow(device, measurement, reading) {
-        try {
-            const query = 'INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)';
-            const db = await sqlite.open(database, { cached: true });
-            console.log(query);
-            console.log(device, measurement, reading);    
-            const result = await db.run(query, [device, measurement, reading]);
-            console.log('Inserted ROWID', result.lastID);
-        } catch(err) {
-            console.error(err.stack)
-        }
-    }
+    // read the database schema from schema.sql and and execute it
+    const migration = fs.readFileSync('schema.sql', 'utf8');
+    db.exec(migration);
 
-Create a main function. The main functions opens the database, and then runs the migrations to create tables if necessary. The first time you run the code the test.db will be created. After the database is open, it will insert one row in to the database.
+Insert some test data using a prepared statement. The query in the prepared statement uses question marks as placeholders for parameters. The parameters are passed when the query is run using `stmt.run`. Always use placeholders when builing queries. This allows the database driver to sanitize the input. Never build queries by concatenating strings, because it puts you at risk for SQL Injection attacks.
 
-    async function main() {
-        const db = await sqlite.open(database, { cached: true });
-        await db.migrate();
-        insertRow('device_test', 'acceleration', 9.82)
-    }
-    main();
+    // insert some test data using a prepared statement
+    const stmt = db.prepare('INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)');
+    stmt.run('device_test', 'acceleration', 9.82);
+
+Select the data from sensor_data and print it out to verify that our data was inserted.
+
+    // select all the records from the sensor table
+    const sensor_data = db.prepare('SELECT * FROM sensor_data').all()
+    console.log(sensor_data)
 
 Run the program 
 
@@ -240,15 +230,36 @@ Run the program
 
 Expected output
 
-    INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)
-    device_test acceleration 9.82
-    Inserted ROWID 1
+    -- table for numeric mqtt data
+    CREATE TABLE IF NOT EXISTS sensor_data (
+        device TEXT,
+        measurement TEXT,
+        reading NUMERIC(9, 2),
+        recorded_at TIMESTAMP NOT NULL default current_timestamp
+    );
+    -- table for text mqtt data
+    CREATE TABLE IF NOT EXISTS sensor_data_text (
+        device TEXT,
+        measurement TEXT,
+        reading TEXT,
+        recorded_at TIMESTAMP NOT NULL default current_timestamp
+    );
+    INSERT INTO sensor_data (device, measurement, reading) VALUES ('device_test', 'acceleration', 9.82)
+    SELECT * FROM sensor_data
+    [
+        {
+            device: 'device_test',
+            measurement: 'acceleration',
+            reading: 9.82,
+            recorded_at: '2021-03-01 00:49:31'
+        }
+    ]
 
 Use the sqlite3 command to verify that data was inserted into the database.
 
 Open the database
 
-    sqlite3 test.db
+    sqlite3 example.db
 
 Run the query
 
@@ -256,62 +267,57 @@ Run the query
 
 Expected output 
 
-    1|device_test|acceleration|9.82|2020-02-23 22:48:15
+    1|device_test|acceleration|9.82|2021-03-01 00:49:31
 
 ## Save MQTT messages to SQLite
 
 Create a new file `mqtt-to-sqlite.js`. This code will save MQTT messages in SQLite using a combination of our code from `mqtt-test.js` and `insert-test.js`.
 
-Include the MQTT and SQLite libraries. Set up the connections.
+Include the MQTT and SQLite libraries. Set up the database connection, schema, and prepared statements.  Set up the MQTT client connection.
 
     require('dotenv').config();
+    const fs = require('fs');
     const mqtt = require('mqtt');
-    const sqlite = require('sqlite');
+    const Database = require('better-sqlite3');
+    const db = new Database('example.db');
 
-    const database = './example.db'
-    const query = 'INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)';
+    // read the database schema from schema.sql and and execute it
+    const migration = fs.readFileSync('schema.sql', 'utf8');
+    db.exec(migration);
+
+    // SQL prepared statements
+    const stmt_numeric_data = db.prepare('INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)');
+    const stmt_text_data = db.prepare('INSERT INTO sensor_data_text (device, measurement, reading) VALUES (?, ?, ?)');
 
     const mqttClient = mqtt.connect(process.env.MQTT_SERVER);
 
-Set up the connect callback for MQTT. Adjust the subscription to match the devices you want to capture. Use specific topics or wildcards. You can also multiple subscriptions here. If you just want to capture your devices, subscribe to `itp/device_XX/+`. Replace `XX` with your device number. To get everyone's data subscribe to `itp/+/+`. 
+Set up the connect callback for MQTT. This function is called after the program connects to the MQTT broker. Adjust the subscription to match the devices you want to capture. Use specific topics or wildcards. You can also multiple subscriptions here. If you just want to capture your device, subscribe to `itp/device_XX/+`. (Replace `XX` with your device number.) To get everyone's data subscribe to `itp/+/+`. 
 
     mqttClient.on('connect', async () => {
         console.log('MQTT connected');
-        await initializeDatabase();
         mqttClient.subscribe('itp/+/+');
+        mqttClient.publish(`presence/connected/${process.env.USER}`, 'mqtt-to-sqlite')
     });
 
-The add the message callback. The topic is split to separate the device and measurement information. The message payload contains the measurement reading value. Once we have all the data, call `insertRow`.
+The add the MQTT message callback. This function is called for every MQTT message that matches your subscription. The topic is split to separate the device and measurement information. The message payload contains the measurement reading value. The message parameter passed to the callback is a Buffer that contains the payload. In our case, it's a string. That string could be a number, like 72.3 or a string like '#615c3c'. We parse the reading to a floating point number. If this fails and returns not a number (NaN), we insert the data into the `sensor_data_text` table. Otherwise when we insert the data into the `sensor_data` table.
 
     mqttClient.on('message', (topic, message) => {
         console.log(topic, message.toString());
 
+        // split the mqtt topic to get the device and measurement
         const parts = topic.split('/');
-        const root = parts[0];
+        const root = parts[0];          // root is always 'itp' and ignored
         const device = parts[1];
         const measurement = parts[2];
         const reading = message;
 
-        insertRow(device, measurement, reading);
-    });
-
-The `insertRow` function writes data to the database. The query is defined as a constant at the top of the file.
-
-    async function insertRow(device, measurement, reading) {
-        try {
-            const db = await sqlite.open(database, { cached: true });
-            const result = await db.run(query, [device, measurement, reading]);
-        } catch(err) {
-            console.error(err.stack)
+        if (isNaN(parseFloat(reading))) {   // the reading is text data
+            stmt_text_data.run(device, measurement, reading);
+        } else {  // the reading is numeric data
+            stmt_numeric_data.run(device, measurement, reading);
         }
-    }
 
-Finally we need to create the `initializeDatabase` function which opens the database and creates the tables if necessary using the schema file.
-
-    async function initializeDatabase() {
-        const db = await sqlite.open(database, { cached: true });
-        await db.migrate();
-    }
+    });
 
 Run the code
 
@@ -327,7 +333,7 @@ Query the database to ensure new records are being inserted
 
 # High Temperature Alert
 
-Code running on the server can be used to check data and send alerts. Create a new file `temperature-alert.js`. Require the mqtt library and create a connection to the MQTT server.
+Code running on thae server can be used to check MQTT data and send alerts when certian conditions are met. Create a new file `temperature-alert.js`. Require the mqtt library and create a connection to the MQTT server.
 
     require('dotenv').config();
     const mqtt = require('mqtt');
@@ -337,11 +343,11 @@ Create a variable for the high temperature limit
 
     const limit = 80;
 
-Create the phone number that should receive the SMS message when this limit is exceeded. The phone number must be 10 digits and begin with a 1. Replace 215-555-9999 with your number.
+Create the phone number that should receive the SMS message when this limit is exceeded. For the US, you phone number must be 10 digits prefixed by the country code, 1. This *should* work for international numbers, if you include the country code. Replace 12155559999 with your number.
 
     const phoneNumber = '12125559999';
 
-In the connect callback, subscribe to messages from a device. Since we're experimenting, subscribe to `test/name/temperature`. Replace device_XX with your device name. We're using the test topic to keep test data out of the itp database.
+In the connect callback, subscribe to messages from a device. Since we're experimenting, subscribe to `test/device_XX/temperature`. Replace device_XX with your device name. We're using the test topic to keep test data out of the itp database.
 
     mqttClient.on('connect', () => {
         console.log('MQTT Connected');
@@ -386,6 +392,16 @@ We can test this by sending some fake data to `test/device_XX/temperature`. Crea
 You should receive an SMS message with the alert.
 
 ![SMS Notification: "Temperature 120F exceeds the high temperature limit of 80F"](img/sms-notification.jpg)
+
+## Listen for data from your device
+
+Once your test is successful, you can change `temperature-alert.js` to listen for messages from your device.
+
+        mqttClient.subscribe('test/device_XX/temperature');
+
+Notice that the topic starts with **itp** instead of test. Be sure to update device_XX with your device number.
+
+        mqttClient.subscribe('itp/device_XX/temperature');
 
 ## SMS
 
@@ -449,5 +465,3 @@ Use `pm2 stop <id|name>` and `pm2 start <id|name>` to stop and start processes. 
 PM2 can restart processes when the machine boots. Install the startup hooks with `pm2 startup`. Save the process list with `pm2 save`. Remember to run `pm2 save` again when you add or change processes.
 
 See the [PM2 documenation](https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
-
-
