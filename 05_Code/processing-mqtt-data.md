@@ -212,7 +212,7 @@ Read the schema.sql file, and run it to create the tables in the database.
     const migration = fs.readFileSync('schema.sql', 'utf8');
     db.exec(migration);
 
-Insert some test data using a prepared statement. The query in the prepared statement uses question marks as placeholders for parameters. The parameters are passed when the query is run using `stmt.run`. Always use placeholders when builing queries. This allows the database driver to sanitize the input. Never build queries by concatenating strings, because it puts you at risk for SQL Injection attacks.
+Insert some test data using a prepared statement. The query in the prepared statement uses question marks as placeholders. The parameters are passed to the prepared statement when the query is run using `stmt.run`. Always use placeholders when builing queries in code. This allows the database driver to sanitize the input. Never build queries by concatenating strings because it puts you at risk for SQL Injection attacks.
 
     // insert some test data using a prepared statement
     const stmt = db.prepare('INSERT INTO sensor_data (device, measurement, reading) VALUES (?, ?, ?)');
@@ -273,7 +273,7 @@ Expected output
 
 Create a new file `mqtt-to-sqlite.js`. This code will save MQTT messages in SQLite using a combination of our code from `mqtt-test.js` and `insert-test.js`.
 
-Include the MQTT and SQLite libraries. Set up the database connection, schema, and prepared statements.  Set up the MQTT client connection.
+Include the MQTT and SQLite libraries,  Set up the database connection, schema, and prepared statements.  Set up the MQTT client connection.
 
     require('dotenv').config();
     const fs = require('fs');
@@ -291,7 +291,7 @@ Include the MQTT and SQLite libraries. Set up the database connection, schema, a
 
     const mqttClient = mqtt.connect(process.env.MQTT_SERVER);
 
-Set up the connect callback for MQTT. This function is called after the program connects to the MQTT broker. Adjust the subscription to match the devices you want to capture. Use specific topics or wildcards. You can also multiple subscriptions here. If you just want to capture your device, subscribe to `itp/device_XX/+`. (Replace `XX` with your device number.) To get everyone's data subscribe to `itp/+/+`. 
+Create the connect callback for MQTT. This function is called after the program connects to the MQTT broker. Adjust the subscription to match the devices you want to capture. Use specific topics or wildcards. You can also multiple subscriptions here. If you just want to capture your device, subscribe to `itp/device_XX/+`. (Replace `XX` with your device number.) To get everyone's data, subscribe to `itp/+/+`. 
 
     mqttClient.on('connect', async () => {
         console.log('MQTT connected');
@@ -333,7 +333,7 @@ Query the database to ensure new records are being inserted
 
 # High Temperature Alert
 
-Code running on thae server can be used to check MQTT data and send alerts when certian conditions are met. Create a new file `temperature-alert.js`. Require the mqtt library and create a connection to the MQTT server.
+Code running on the server can be used to check MQTT data and send alerts when certain conditions are met. Create a new file `temperature-alert.js`. Require the mqtt library and create a connection to the MQTT server.
 
     require('dotenv').config();
     const mqtt = require('mqtt');
