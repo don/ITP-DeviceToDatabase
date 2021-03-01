@@ -341,11 +341,11 @@ Create the phone number that should receive the SMS message when this limit is e
 
     const phoneNumber = '12125559999';
 
-In the connect callback, subscribe to messages from a device. Since we're experimenting, subscribe to `test/name/temperature`. Replace name with your name. We're using the test topic to keep test data out of the itp database.
+In the connect callback, subscribe to messages from a device. Since we're experimenting, subscribe to `test/name/temperature`. Replace device_XX with your device name. We're using the test topic to keep test data out of the itp database.
 
     mqttClient.on('connect', () => {
         console.log('MQTT Connected');
-        mqttClient.subscribe('test/name/temperature');
+        mqttClient.subscribe('test/device_XX/temperature');
     });
 
 When a message is received, check to see if the value is over the limit and post a new message to the SMS topic.
