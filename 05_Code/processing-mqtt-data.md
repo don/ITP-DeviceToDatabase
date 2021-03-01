@@ -7,7 +7,7 @@
       * [Log MQTT messages to a File](#log-mqtt-messages-to-a-file)
    * [Write MQTT messages to SQLite](#write-mqtt-messages-to-a-sqlite-database)
       * [SQLite driver](#sqlite-driver)
-      * [Migrations](#migrations)
+      * [Database Tables](#database-tables)
       * [Inserting records with Node.js](#inserting-records-with-nodejs)
       * [Save MQTT messages to SQLite](#save-mqtt-messages-to-sqlite)
    * [High Temperature Alert](#high-temperature-alert)
