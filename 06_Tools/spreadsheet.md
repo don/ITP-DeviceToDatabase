@@ -6,9 +6,8 @@ Use Google spreadsheets to graph data.
 
 Connect to TimescaleDB
 
-    psql -h timescale.dev2db.com -U your-user-name itp
-    \c tsitp
-
+    psql -h timescale.dev2db.com -U your-user-name tsitp
+    
 Set the timezone
 
     SET timezone TO 'America/New_York';
@@ -46,7 +45,7 @@ Insert a chart using `Insert -> Chart`
 
 ![screenshot of spreadsheet with chart over data](img/daily-inline.png)
 
-Move the chart to it's own page. Click top right corner of chart. On the menu choose "Move to own chart".
+Move the chart to it's own page. Click top right corner of chart. On the menu choose "Move to own sheet".
 
 ![screenshot showing "move to own sheet" menu](img/daily-move-to-own-sheet.png)
 
