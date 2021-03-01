@@ -6,7 +6,7 @@ Use Google spreadsheets to graph data.
 
 Connect to TimescaleDB
 
-    psql -h timescale.iotwork.shop -U xx itp
+    psql -h timescale.dev2db.com -U your-user-name itp
     \c tsitp
 
 Set the timezone
@@ -22,7 +22,7 @@ Run a query and export min, max, and average daily temperature for device_dc as 
         min(reading) AS min_temp, max(reading) AS max_temp, round(avg(reading)) AS avg_temp 
         FROM sensor_data 
         WHERE measurement = 'temperature' 
-        AND device = 'device_03' 
+        AND device = 'device_XX'
         GROUP BY date 
         ORDER BY date;
 
@@ -61,7 +61,7 @@ Run a 2nd query, exporting average temperature using 15 minute time buckets.
     SELECT time_bucket('15 minutes', recorded_at::timestamp) AS time, round(avg(reading)::numeric, 2) as temperature 
         FROM sensor_data 
         WHERE measurement = 'temperature' 
-        AND device = 'device_03' 
+        AND device = 'device_XX' 
         GROUP BY time 
         ORDER BY time;
 
