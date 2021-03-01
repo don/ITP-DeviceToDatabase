@@ -6,8 +6,8 @@ We are going to create an Express app to query the database and use Google Chart
 
 Open `Terminal.app` and create a new project.
 
-    mkdir dtd-charts
-    cd dtd-charts
+    mkdir dev2db-charts
+    cd dev2db-charts
     npm init -y
 
 Install the Express framework
@@ -128,12 +128,11 @@ Now that we have APIs to serve data we need some web pages to use the APIs. Expr
 
     app.use(express.static('public'));
 
-**Remove** the old default route
+Optionally **Remove** the old default route
 
-    // delete this line from server.js
-    app.get('/', (req, res) => res.send('Hello World!'));
+    // app.get('/', (req, res) => res.send('Hello World!'));
 
-Create a new directory named `public`. Create a file named index.html in the public directory.
+Create a new directory named `public` for the html and javascript files. Create a file named index.html in the public directory.
 
     <!-- index.html -->
     Hello from index.html
@@ -149,7 +148,7 @@ Restarting the server after each change can be tedious. We can use `pm2-dev` to 
     sudo npm install -g pm2
     pm2-dev server.js
 
-## index.html and chart.js
+## index.html and index.js
 
 Now that our server is working, we can write the client side of our app. Replace the existing contents of index.html with the following.
 
@@ -158,7 +157,7 @@ Now that our server is working, we can write the client side of our app. Replace
     <head>
         <title>Device to Database</title>
         <script src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src='chart.js'></script>
+        <script src='index.js'></script>
     </head>
 
     <body>
@@ -169,7 +168,7 @@ Now that our server is working, we can write the client side of our app. Replace
     </body>
     </html>
 
-Create a new file `public/chart.js`. When the chart.js loads in the web browser, it need to get a list of devices from the server and build a HTML select control with the data.
+Create a new file `public/index.js`. When index.js loads in the web browser, it gets a list of devices from the server and builds an HTML select control with the data.
 
     window.addEventListener('load', getDeviceList);
 
