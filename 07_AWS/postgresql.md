@@ -128,7 +128,7 @@ Use psql to verify that data is being written to the sensor_data table.
 
 ## Extra
 
-Create another Lambda function that saves the sensor data to the `environment` table using the code below.
+Create another Lambda function that saves the sensor data to the `environment` table using the code below. Be sure to Python 3.7 if you want to use the PostgreSQL driver from the arn:aws:lambda:us-east-1:366425516243:layer:IotWorkshopLayer:1 lambda layer.
 
     import os
     import json
@@ -157,11 +157,11 @@ Create another Lambda function that saves the sensor data to the `environment` t
             data['device'],
             data['temperature'],
             data['humidity'],
-            data['pressure'],
-            data['illuminance'],
-            data['uva'],
-            data['uvb'],
-            data['uvindex'],
+            data.get('pressure'),
+            data.get('illuminance'),
+            data.get('uva'),
+            data.get('uvb'),
+            data.get('uvindex'),
             timestamp
         ]
         
@@ -173,8 +173,8 @@ Create another Lambda function that saves the sensor data to the `environment` t
         c.close()
 
     def lambda_handler(event, context):
-    print(event) # log the event
-    save_to_postgres(event)
+        print(event) # log the event
+        save_to_postgres(event)
 
  Next [InfluxDB](influxdb.md) 
    

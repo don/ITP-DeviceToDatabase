@@ -49,7 +49,7 @@ In order to connect the Arduino to AWS IoT Core, our device needs to authenticat
 
 ### Create Private Key and CSR
 
-Load the [GenerateCSR.ino](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/arduino/GenerateCSR/GenerateCSR.ino) sketch on your MRK WiFi 1010.
+Load the [GenerateCSR.ino](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/arduino/GenerateCSR/GenerateCSR.ino) sketch on your Arduino Nano 33 IoT (or MRK WiFi 1010).
 
 Open the Serial Monitor and generate a CSR. Press the "Send" button or enter key to accept all the default values. The device name is pre-populated with the serial number from the ECCX08 chip. Refer to the [week 3 instructions](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/exercises/exercise7.md) if you need more details.
 
@@ -63,15 +63,15 @@ Before we can connect the Arduino to AWS, we need to tell AWS about the device a
 
 https://console.aws.amazon.com/iot/home?region=us-east-1#/thinghub
 
-Press the `Register a Thing` button.
+Press the `Create` button.
 Choose `Create a Single Thing`.
 
- * Use the Serial Number for your device name. Scroll down and choose Next.
+ * Use the **Serial Number** for your device name. Scroll down and choose Next.
  * Choose `Create with CSR`
  * Choose `csr.txt` in the Finder window
- * Choose `Upload`
- * Attach the `ThingPolicy` to your device
- * Choose `Register Thing`
+ * Choose `Upload File`
+ * Check the box next to `ThingPolicy` to attach the policy your device
+ * Press the `Register Thing` button
 
 ![Screenshot of successful device registration](img/aws-iot-thing-registered.png)
 
@@ -80,9 +80,9 @@ Choose `Create a Single Thing`.
 From the [Manage -> Things](https://console.aws.amazon.com/iot/home?region=us-east-1#/thinghub) screen:
  * Click on the newly created device.
  * Click the Security menu on the left
- * Click the Certificate to show the details
+ * Click the box with the Certificate number to show the details
  * Use the Action menu to Download the certificate
- * You will need to paste this certificate into config.h in the next step
+ * You will need to paste this certificate into config.h of the AWS.ino Arduino code
 
 ![Screenshot of page for downloading the device certificate](img/aws-iot-download-certificate.png)
 

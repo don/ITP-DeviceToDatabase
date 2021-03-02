@@ -369,7 +369,7 @@ Resources:
       Timeout:                          60
       Environment: 
         Variables:                      
-          INFLUXDB_HOSTNAME:            "influx.itpdtd.com"
+          INFLUXDB_HOSTNAME:            "influx.dev2db.com"
           INFLUXDB_USER:                "samantha"
           INFLUXDB_PASSWORD:            "secret"
           INFLUXDB_DATABASE:            "samantha"

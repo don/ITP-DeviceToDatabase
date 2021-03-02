@@ -16,7 +16,9 @@ WiFiClient wifiClient;
 BearSSLClient sslClient(wifiClient);
 MqttClient mqttClient(sslClient);
 
-const int ledPin = 5;
+// to support a dimmable LED, rewire the LED from pin 13 to pin 5
+// const int ledPin = 5;
+const int ledPin = 13;
 String clientId;
 
 // Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
