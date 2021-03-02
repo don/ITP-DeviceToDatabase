@@ -51,7 +51,7 @@ In order to connect the Arduino to AWS IoT Core, our device needs to authenticat
 
 Load the [GenerateCSR.ino](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino_MQTT/arduino/GenerateCSR/GenerateCSR.ino) sketch on your MRK WiFi 1010.
 
-Open the Serial Monitor and generate a CSR. Press the "Send" button or enter key to accept all the default valyes. The device name is pre-populated with the serial number from the ECCX08 chip. Refer to the [week 3 instructions](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/exercises/exercise7.md) if you need more details.
+Open the Serial Monitor and generate a CSR. Press the "Send" button or enter key to accept all the default values. The device name is pre-populated with the serial number from the ECCX08 chip. Refer to the [week 3 instructions](https://github.com/don/ITP-DeviceToDatabase/blob/master/02_Arduino/exercises/exercise7.md) if you need more details.
 
 ![Screenshot of Arduino sketch generating CSR](../02_Arduino/exercises/images/generate-csr.png)
 
