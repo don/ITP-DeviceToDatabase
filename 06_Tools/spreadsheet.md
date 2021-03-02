@@ -27,7 +27,7 @@ Run a query and export min, max, and average daily temperature for device_dc as 
 
 Export the data from the view to a CSV file
 
-    \COPY (select * from daily_temperatures) to '/tmp/daily_temperatures.csv' WITH (format csv, header)
+    \COPY (select * from daily_temperatures) to '~/Desktop/daily_temperatures.csv' WITH (format csv, header)
 
 Create a new Google spreadsheet https://sheets.new
 
@@ -64,7 +64,7 @@ Run a 2nd query, exporting average temperature using 15 minute time buckets.
         GROUP BY time 
         ORDER BY time;
 
-    \COPY (SELECT * FROM fifteen_minute) to '/tmp/fifteen_minute_avg_temp.csv' WITH (format csv, header true)
+    \COPY (SELECT * FROM fifteen_minute) to '~/Desktop/fifteen_minute_avg_temp.csv' WITH (format csv, header true)
 
 Import data using `File -> Import -> Upload`. Be sure to select "Insert new sheet(s)".
 
