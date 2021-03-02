@@ -9,12 +9,12 @@
 
 Review the details of the Postgres queries we covered in class. I recommended that you run the queries against the databases to get a better understanding of how they work. Modify the queries to get different data.
 
-* [PostgreSQL Sensor Data Queries](postgres2.md)
-* [PostgreSQL Additional Queries](postgres3.md)
+* [PostgreSQL Sensor Data Queries](../03_RelationalDatabases/postgres2.md)
+* [PostgreSQL Additional Queries](../03_RelationalDatabases/postgres3.md)
 
 Review the SQLite material we covered in class. Ensure that you're able to create, populate, and query SQLite databases on your machine. 
 
-* [SQLite](sqlite.md)
+* [SQLite](../03_RelationalDatabases/sqlite.md)
 
 ## Assignment: SQL
 
