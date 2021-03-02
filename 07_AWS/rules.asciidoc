@@ -1,0 +1,63 @@
+[[chapter-rules]]
+== AWS IoT Core Rules
+
+We are now successfully sending data from the Arduino to AWS using MQTT. The MQTT broker does not store data. It makes data available to subscribers. Something needs to be listening and processing the data. With AWS, the way we do this is by creating rules.
+
+If necessary, use the `Services` menu to navigate to `IoT Core`. Click the `Act` menu on the left side and create a rule.
+
+image::img/rule-no-rules.png[]
+
+Name the rule `environment`
+
+image::img/rule-create.png[]
+
+Add the rule query statement.
+
+----
+SELECT topic(2) as device, timestamp() as timestamp, * FROM 'things/+/environment'
+----
+
+image::img/rule-query.png[]
+
+// TODO is this a sidebar?
+
+The `topic(2)` function gets the 2nd element from the MQTT topic, which in this case, is the device name. For example device `01237EE` writes to `things/01237EE/environment`. The topic(2) function will return `01237EE`.
+
+The `timestamp()` function returns the current timestamp. For our data, we can use the time it arrives at the broker rather than the time the data was recorded on the device.
+
+The wildcard symbol, `*`, selects all the remaining attributes in from the JSON in the payload of the MQTT message.
+
+[TIP]
+====
+See the https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html[AWS IoT SQL Reference] for more details about the types of queries you can write.
+====
+
+Press the `Add Action` button. Add an action to split the message into multiple columns in a DynamoDB table.
+
+// .Rule action - split into multiple columns of DynamoDB table
+image::img/rule-action-split-dynamo-v2.png[]
+
+Choose the `environment` table, which was created by CloudFormation. Select the `iot-core-execution-role`. This role was created by CloudFormation. It includes permissions to write to DynamoDB stream.
+
+image::img/rule-action-dynamo.png[]
+
+Your rule should look similar to the screenshot below. Be sure to scroll to the bottom and press the `Create Rule` button.
+
+//[[figure-create-rule]]
+//.Create Rule
+image::img/rule-query-action.png[]
+
+Once the new rule is in place, the DynamoDB table will start being populated. Use the AWS console to https://console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:selected=environment;tab=items[view data in the environment table].
+
+. Click `Services -> DynamoDB`
+. Choose the `Tables` menu on the left
+. Select the `environment` table
+. Click the `items` tab to view the data
+. Click on a row to see more details
+
+image::img/rule-dynamo-items.png[]
+
+image::img/rule-dynamo-edit.png[]
+
+Next link:postgresql.md[PostgreSQL]
+
