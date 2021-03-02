@@ -22,7 +22,7 @@ Open a web browser to http://localhost:1880
 
 ### Hello World
     
-Drag an inject node from the left side onto the flow. Drag a debug node onto the flow. Draw a line to connect inject to debug. Double click on inject node to configure it. Change payload from timestamp to string. Type "hello, world" in the payload field. Deploy the flow using the button on the top right. Switch the debug tab in the right pane. Click the handle on the left side of the inject node. You should see a debug message that says hello, world.
+Drag an `inject` node from the left side onto the flow. Drag a `debug` node onto the flow. Draw a line to connect inject to debug. Double click on inject node to configure it. Change payload from timestamp to string. Type "hello, world" in the payload field. Deploy the flow using the button on the top right. Switch the debug tab in the right pane. Click the handle on the left side of the inject node. You should see a debug message that says hello, world.
 
 ![screenshot of hello world flow](img/flow-hello-unconfigured.png)
 ![screenshot of configuration sheet for an inject node](img/flow-hello-inject-node.png)
@@ -30,13 +30,13 @@ Drag an inject node from the left side onto the flow. Drag a debug node onto the
 
 ### MQTT
 
-Drag an MQTT input node from the left side onto the workflow. Draw a line to connect the MQTT node to the debug node.
+Drag a `mqtt in` node from the left side onto the workflow. Draw a line to connect the MQTT node to the debug node.
 
 Double click on the MQTT node to configure it. Click the edit button next to the server field to configure a new MQTT connection.
 
 ![screenshot mqtt node configuration](img/flow-new-mqtt-broker.png)
 
-Enter itpdtd.com port 8883 for the connection. Check the "enable secure" checkbox. Use the security tab to enter your credentials. Click the add button. (Note the screenshots show an older MQTT server from 2019, iotwork.shop.)
+Enter dev2db.com port 8883 for the connection. Check the "enable secure" checkbox. Use the security tab to enter your credentials. Click the add button.
 
 ![screenshot add new mqtt broker configuration](img/flow-mqtt-add-broker.png)
 
@@ -49,7 +49,7 @@ Deploy the workflow. You should see MQTT messages in the debug window.
 
 ### Logging Messages
 
-Drag a *file* node onto the flow. Connect the output of MQTT to the input of the file. Double click on the file node to configure it. Enter /tmp/mqtt.log as the filename. Click done and deploy the workflow.
+Drag a `file` node onto the flow. Connect the output of `mqtt` node to the input of the file. Double click on the file node to configure it. Enter /tmp/mqtt.log as the filename. Click done and deploy the workflow.
 
 ![screenshot file output node configuration](img/flow-mqtt-log-file-config.png)
 
@@ -57,7 +57,7 @@ Check the contents of the log file. Open a terminal. `tail -f /tmp/mqtt.log`. Th
 
 ![screenshot tailing /tmp/mqtt.log showing numbers but no topic information](img/tail-log-payload-only.png)
 
-Drag a function node onto the flow. Double click to configure. Name the node "format log message". Enter the flowing code for the function.
+Drag a `function` node onto the flow. Double click to configure. Name the node "format log message". Enter the flowing code for the function.
 
     const timestamp = new Date().getTime();
     // tab separated values to be logged
@@ -74,15 +74,15 @@ Click done. Delete the connections coming out of the MQTT node. Connect the outp
 
 ### Writing to MQTT
 
-Create a new workflow. Drag 2 inject nodes onto the flow. Drag an MQTT output node onto the flow. Connect the inject nodes to the MQTT node. Configure one inject node to send "ON" and the other to send "OFF". Double click the MQTT node. Choose the correct server. Enter `itp/device_xx/led` for the topic. Click done and deploy the flow. Click the on and off nodes to control the LED on your device.
+Create a new workflow. Drag 2 `inject` nodes onto the flow. Drag a `mqtt out` node onto the flow. Connect the inject nodes to the MQTT node. Configure one inject node to send "ON" and the other to send "OFF". Double click the MQTT node. Choose the correct server. Enter `itp/device_xx/led` for the topic. Click done and deploy the flow. Click the on and off nodes to control the LED on your device.
 
 ![screenshot of workflow injecting ON message for the LED](img/flow-led-switch.png)
 
 ### High Temperature Alert
 
-Create a new flow. Drag a MQTT input onto the flow. Configure it for the topic `test/+/temperature` or `test/device_XX/temperature`. Drag a function node onto the flow. Name the node "high temperature alert" and enter the following code. Be sure to update the phone number in the code with your phone number. For testing we use the `test/` prefix so we're not mixing fake data with real data. You can subscribe to `itp/device_xx/temperature` to send real alerts for your device's temperature.
+Create a new flow. Drag a `mqtt in` onto the flow. Configure it for the topic `test/+/temperature` or `test/device_XX/temperature`. Drag a function node onto the flow. Name the node "high temperature alert" and enter the following code. Be sure to update the phone number in the code with your phone number. For testing we use the `test/` prefix so we're not mixing fake data with real data. You can subscribe to `itp/device_xx/temperature` to send real alerts for your device's temperature.
 
-    // put your phone number here
+    // put your phone number (including the country code) here
     const phone = '17185559999';
     const temperature = Number(msg.payload);
     if (temperature > 80) {
