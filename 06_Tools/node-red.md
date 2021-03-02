@@ -53,7 +53,7 @@ Drag a `file` node onto the flow. Connect the output of `mqtt` node to the input
 
 ![screenshot file output node configuration](img/flow-mqtt-log-file-config.png)
 
-Check the contents of the log file. Open a terminal. `tail -f /tmp/mqtt.log`. The file contains data, but only the payload. We really want to log a timestamp, the topic, and the payload [like we did in when writing code to process MQTT messages.](https://github.com/don/ITP-DeviceToDatabase/blob/master/05_Code/processing-mqtt-data.md#log-mqtt-messages-to-a-file).
+Check the contents of the log file. Open a terminal. `tail -f /tmp/mqtt.log`. The file contains data, but only the payload. We really want to log a timestamp, the topic, and the payload [like we did in when writing code to process MQTT messages.](../05_Code/processing-mqtt-data.md#log-mqtt-messages-to-a-file).
 
 ![screenshot tailing /tmp/mqtt.log showing numbers but no topic information](img/tail-log-payload-only.png)
 
