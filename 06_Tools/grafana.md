@@ -106,4 +106,4 @@ Sometimes there is too much data in a chart to clearly see what's happening. Cli
 
 ![screenshot of dashboard and one series selected in the temperature graph](img/grafana-select-one.png)
 
-Now try to create some additional dashboards and queries.
+Now create some addtional dashboards and queries for your data.
