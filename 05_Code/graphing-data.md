@@ -122,7 +122,7 @@ Add another endpoint to get temperature data for a specific device.
         }
     });
 
-Open http://localhost:4000/device/device_01/temperature to test the new endpoint.
+Restart the sever and open http://localhost:4000/device/device_01/temperature to test the new endpoint.
 
 ![](img/device_01-temperature-json.png)
 
