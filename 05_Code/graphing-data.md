@@ -86,7 +86,11 @@ Use Control + C to stop the server. Restart the server so it runs the new code.
 
     node server.js
 
-Open a new Terminal.app and use curl to test the new endpoint
+Open http://localhost:4000/device in a web browser to view the devices
+
+![](img/devices-browser.png)
+
+Alternately you could open new Terminal.app and use curl to test the new endpoint
 
     curl http://localhost:4000/device
 
@@ -94,9 +98,6 @@ You should get back a list of devices
 
 ![](img/devices-curl.png)
 
-This URL will also work in your browser
-
-![](img/devices-browser.png)
 
 ## Get temperature data
 
@@ -120,6 +121,10 @@ Add another endpoint to get temperature data for a specific device.
             res.status(400).send('server error');
         }
     });
+
+Open http://localhost:4000/device/device_01/temperature to test the new endpoint.
+
+![](img/device_01-temperature-json.png)
 
 
 ## Static files
