@@ -24,7 +24,7 @@ A database administrator, such as the postgres user, must enable the TimescaleDB
 
     CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
-Each student has database on the timescale.dev2dc.com server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
+Each student has database on the timescale.dev2db.com server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
 
 Create a new sensor_data table in timescale, using the SQL CREATE syntax. Note that the `id` column has been removed.
 
@@ -49,7 +49,7 @@ All the queries we did for with PostgreSQL in [week 4](../03_RelationalDatabases
 
 The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in PosgreSQL. The TimescaleDB specific functions are marked with `TSDB Function`.
 
-The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previously with PostgreSQL we used the `extract` function to extract dates and time parts from the recorded_at column to use for group by.
+The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previously with PostgreSQL we used the `extract` function to extract dates and time parts from the recorded_at column to use for group by. See the [time_bucket API](https://docs.timescale.com/latest/api#time_bucket) for more details.
 
 Connect
 
@@ -65,9 +65,9 @@ Switch to the farm database
 
 Daily summary for the office for December 2018
 
-Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct but looks odd. See https://github.com/timescale/timescaledb/issues/489#issuecomment-377311023
+The optional 3rd paramater of time_bucket sets the origin of the time bucket to 2018-12-01 in the current time zone.
 
-    SELECT time_bucket('1 day', recorded_at::timestamp) AS one_day,
+    SELECT time_bucket('1 day', recorded_at, timestamptz '2018-12-01') AS one_day,
             device, min(reading), max(reading),
             round(avg(reading)::numeric, 2) as avg
         FROM sensor_data
@@ -77,19 +77,19 @@ Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct
         GROUP BY one_day, device
         ORDER BY one_day;
 
-12 hour
+For a 4 hour time bucket, you can set the origin
 
-    SELECT time_bucket('12 hours', recorded_at::timestamp) AS twelve_hour,
+    SELECT time_bucket('4 hours', recorded_at, timestamptz '2018-12-10') AS four_hours,
             device, min(reading), max(reading),
             round(avg(reading)::numeric, 2) as avg
         FROM sensor_data
         WHERE recorded_at BETWEEN '2018-12-10' and '2018-12-11'
         AND device IN ('office')
         AND measurement = 'temperature'
-        GROUP BY twelve_hour, device
-        ORDER BY twelve_hour;
+        GROUP BY four_hours, device
+        ORDER BY four_hours;
 
-4 hour
+Or cast recorded at to a timestamp to align the time bucket with midnight local time
 
     SELECT time_bucket('4 hours', recorded_at::timestamp) AS four_hours,
             device, min(reading), max(reading),
@@ -101,7 +101,7 @@ Need to cast to timestamp for 1 day otherwise displayed in UTC, which is correct
         GROUP BY four_hours, device
         ORDER BY four_hours;
 
-1 hour
+You don't need to worry about aligning buckets of 1 hour or less
 
     SELECT time_bucket('1 hour', recorded_at) AS one_hour,
             device, min(reading), max(reading),
