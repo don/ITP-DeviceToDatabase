@@ -249,13 +249,23 @@ To have the chart render when the page loads, add this line to the end of the `g
 
 ## Slow response
 
-Some of the devices return a lot of data, and the screens render slowly. We can take advantage of Timescale and use time_bucket to roll up the data. Try updating the the query to use 15 minute increments.
+Some of the devices return lots of data, and the page displays slowly. We can take advantage of Timescale and use the time_bucket function to roll up the data. In `server.js`, comment out the original query for `/device/:device/temperature` and add the new query that rolls up data in 15 minute increments.
 
-    const query = `SELECT time_bucket('15 minute', recorded_at) as recorded_at, avg(reading) as temperature
-        FROM sensor_data
-        WHERE measurement = 'temperature'
-        AND device = $1
-        GROUP BY 1`;
+    app.get('/device/:device/temperature', async (req, res) => {
+        const device = req.params.device;
+
+        // original query 
+        // const query = `SELECT recorded_at, reading::float as temperature 
+        //    FROM sensor_data 
+        //    WHERE measurement = 'temperature' 
+        //    AND device = $1`;
+
+        // faster query using time_bucket
+        const query = `SELECT time_bucket('15 minute', recorded_at) as recorded_at, avg(reading) as temperature
+            FROM sensor_data
+            WHERE measurement = 'temperature'
+            AND device = $1
+            GROUP BY 1`;
 
 
 # More Charts
