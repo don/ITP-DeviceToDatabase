@@ -27,6 +27,6 @@ Share a copy of your SQLite database via Google Drive.
   - Use TimescaleDB and the `tsfarm` database. Hint: use the `time_bucket` function
   - Explain the differences between the InfluxDB and TimescaleDB and query results.
 
-4) Write two queries that use data from your sensor data in the `itp` database on InfluxDB.
+4) OPTIONAL: Write two queries that use data from your sensor data in the `itp` database on InfluxDB.
 
 Submit the screenshots of your charts, a link to your SQLite database, and the queries & results for SQL parts 2, 3 and 4 via email by **March 11th**, 5:00 PM EST. Make sure queries are formatted so they are easy to understand. The queries should be **text**, so I can run them. It's fine to submit a screenshot of the query results.
