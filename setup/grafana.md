@@ -10,7 +10,7 @@ I have DigitalOcean running DNS for the itpdtd.com domain, so I set up a new dom
 
 Since I set up my SSH key when I created the machine, I can ssh into root@grafana.itpdtd.com
 
-    ssh root@grafana.itpdtd.com
+    ssh root@grafana.dev2db.com
 
 Turn on the firewall and restrict incoming traffic to ssh, port 22
 
@@ -28,11 +28,11 @@ Reboot, just in case the kernel was upgraded
 
 SSH back in
 
-    ssh root@grafana.itpdtd.com
+    ssh root@grafana.dev2db.com
 
 Install the nginx 
 
-	apt install nginx -y
+    apt install nginx -y
 
 Open the firewall for web traffic
 
@@ -43,18 +43,17 @@ Open your http://grafana.itpdtd.com in a web browser to ensure nginx is running
 
 Install the letsencrypt.org certbot
 
-	add-apt-repository ppa:certbot/certbot
-	apt install python-certbot-nginx -y
+    apt install python3-certbot-nginx -y
 
 Get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when it asks you to redirect all http traffic to https.
 
-    certbot --nginx -d grafana.itpdtd.com
+    certbot --nginx -d grafana.dev2db.com
 
 Now that we have a TLS certificate, we can install Grafana based on https://grafana.com/grafana/download
 
     sudo apt-get install -y adduser libfontconfig1
-    wget https://dl.grafana.com/oss/release/grafana_6.6.2_amd64.deb
-    sudo dpkg -i grafana_6.6.2_amd64.deb
+    wget https://dl.grafana.com/oss/release/grafana_7.4.3_amd64.deb
+    sudo dpkg -i grafana_7.4.3_amd64.deb
 
 Start Grafana
 
