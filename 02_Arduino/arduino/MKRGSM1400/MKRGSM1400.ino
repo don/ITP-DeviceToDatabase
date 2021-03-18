@@ -16,11 +16,17 @@
 #include "Adafruit_MCP9808.h"
 #include "config.h"
 
-// GSM configuration
+// GSM configuration - hologram
+//const char pin[]      = "";
+//const char apn[]      = "hologram";
+//const char login[]    = "";
+//const char password[] = "";
+
+// GSM configuration - soracom
 const char pin[]      = "";
-const char apn[]      = "hologram";
-const char login[]    = "";
-const char password[] = "";
+const char apn[]      = "soracom.io";
+const char login[]    = "soracom";
+const char password[] = "soracom";
 
 const int ledPin = LED_BUILTIN;
 String ledTopic = "itp/" + DEVICE_ID + "/led";
@@ -109,11 +115,14 @@ void connectMQTT() {
     Serial.println(mqtt.connectError());
     Serial.println("Waiting 5 seconds before retrying");
     delay(5000);
-    // TODO ensure GSM is connected before looping again
+    if (!gsm.isAccessAlive()) {
+      connectGSM();
+    }  
   }
 
   mqtt.beginMessage("presence/" + DEVICE_ID);
-  mqtt.print("MKR GSM 1400"); 
+  mqtt.print("MKR GSM 1400 "); 
+  mqtt.print(apn); 
   mqtt.endMessage();
 
   // subscribe to feed that controls the LED
