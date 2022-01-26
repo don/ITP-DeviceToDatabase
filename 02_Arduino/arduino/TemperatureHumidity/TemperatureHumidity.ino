@@ -6,15 +6,12 @@
 
 #include <WiFiNINA.h>
 #include <ArduinoMqttClient.h>
+#include <Wire.h>
+#include "Adafruit_SHT31.h"
 
 #include "config.h"
 
-#include <DHT.h>
-
-#define DHTPIN 3          // Digital pin connected to the DHT sensor
-//#define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
+Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 WiFiSSLClient net;
 MqttClient mqtt(net);
@@ -32,7 +29,11 @@ void setup() {
   // Wait for a serial connection
   while (!Serial) { }
 
-  dht.begin();
+  // initialize the SHT31 sensor
+  if (! sht31.begin(SHT31_DEFAULT_ADDR)) {
+    Serial.println("Couldn't find SHT31");
+    while (1) { delay(1); }       // wait forever
+  }
    
   Serial.println("Connecting WiFi");
   connectWiFi();
@@ -54,16 +55,19 @@ void loop() {
     lastMillis = millis();
 
     // read the sensor values
-    float temperature = dht.readTemperature(true);
-    float humidity    = dht.readHumidity();
+    float temperatureC = sht31.readTemperature();
+    float temperatureF = temperatureC * 1.8 + 32;
+    float humidity    = sht31.readHumidity();
 
-    Serial.print(temperature);
+    Serial.print(temperatureC);
+    Serial.print("°C ");
+    Serial.print(temperatureF);
     Serial.print("°F ");
     Serial.print(humidity);
     Serial.println("% RH");
     
     mqtt.beginMessage(temperatureTopic);
-    mqtt.print(temperature); 
+    mqtt.print(temperatureF); 
     mqtt.endMessage();
 
     mqtt.beginMessage(humidityTopic);

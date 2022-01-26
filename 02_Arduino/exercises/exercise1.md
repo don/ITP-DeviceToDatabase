@@ -16,7 +16,7 @@ Run the installer.
 ### Arduino SAMD Board Definitions
 Use the Arduino Boards Manager to install the Arduino SAMD Board definitions. Open the Boards Manager using the menu _Tools -> Boards -> Boards Manager_
 
-![Arduino Boards Manager](images/BoardManager-Menu.png)
+![Arduino Boards Manager](images/BoardsManager-menu.png)
 
 Search for "33 IoT" and install the Arduino SAMD Boards (32-bit ARM Cortex-M0+) definitions.
 
@@ -29,7 +29,7 @@ Install the following Arduino Libraries using the Library manager.
 * Arduino MQTT Client library (search for "ArduinoMQTTClient")
 * Arduino HTTP Client library (search for "ArduinoHTTPClient")
 * Arduino BearSSL library (search for "ArduinoBearSSL")
-* Adafruit DHT-22 library (search for "DHT22")
+* Adafruit SHT31 library (search for "Adafruit SHT31")
 
 Open the library manager using the menu _Tools -> Manage Libraries_
 
@@ -49,14 +49,14 @@ Search for "ArduinoHTTPClient" and install the Arduino HTTP Client library.
 
 Search for "ArduinoBearSSL" and install the ArduinoBearSSL library. If you are prompted to install missing dependencies, choose "Install All".
 
-![Arduino Library Manager Search ECCX](images/library-arduinobearssl.png)
+![Arduino Library Manager Search BearSSL](images/library-arduinobearssl.png)
 
-![Arduino Library Manager Search ECCX](images/library-arduinobearssl-dependencies.png)
+![Arduino Library Manager Install ECCX](images/library-arduinobearssl-dependencies.png)
 
-Search for "DHT22" and install the Adafruit DHT sensor library. If you are prompted to install missing dependencies, choose "Install All".
+Search for "Adfruit SHT31" and install the Adafruit SHT31 Library. If you are prompted to install missing dependencies, choose "Install All".
 
-![Arduino Library Manager Search ECCX](images/library-dht22.png)
+![Arduino Library Manager Search SHT31](images/library-sht31.png)
 
-![Arduino Library Manager Search ECCX](images/library-dht22-dependencies.png)
+![Arduino Library Manager Install SHT31 Dependencies](images/library-sht31-dependencies.png)
 
 Next [Exercise 2: Assemble the Hardware](exercise2.md)

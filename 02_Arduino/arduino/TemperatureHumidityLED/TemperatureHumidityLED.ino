@@ -1,20 +1,17 @@
 // Send temperature and humidity data to MQTT
 //
-// WiFiNINA https://www.arduino.cc/en/Reference/WiFiNINA (MKR WiFi 1010)
+// WiFiNINA https://www.arduino.cc/en/Reference/WiFiNINA (Arduino Nano 33 IoT / MKR WiFi 1010)
 // Arduino MQTT Client  https://github.com/arduino-libraries/ArduinoMqttClient
-// Adafruit DHT
+// Adafruit SHT31
 
 #include <WiFiNINA.h>
 #include <ArduinoMqttClient.h>
+#include <Wire.h>
+#include "Adafruit_SHT31.h"
 
 #include "config.h"
 
-#include <DHT.h>
-
-#define DHTPIN 3          // Digital pin connected to the DHT sensor
-//#define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
+Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 WiFiSSLClient net;
 MqttClient mqtt(net);
@@ -26,19 +23,29 @@ String ledTopic = "itp/" + DEVICE_ID + "/led";
 // Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
 unsigned long publishInterval = 10 * 1000;
 unsigned long lastMillis = 0;
-const int ledPin = 13;
+const int ledPin = LED_BUILTIN;
 
 void setup() {
   Serial.begin(9600);
 
+  // initialize ledPin as an output.
+  pinMode(ledPin, OUTPUT);
+
+  // turn the LED on
+  digitalWrite(ledPin, HIGH);
+
   // Wait for a serial connection
   while (!Serial) { }
 
-  // initialize ledPin as an output.
-  pinMode(ledPin, OUTPUT);
+  // turn the LED off
+  digitalWrite(ledPin, LOW);
   
-  dht.begin();
-   
+  // initialize the SHT31 sensor
+  if (! sht31.begin(SHT31_DEFAULT_ADDR)) {
+    Serial.println("Couldn't find SHT31");
+    while (1) { delay(1); }       // wait forever
+  }
+     
   Serial.println("Connecting WiFi");
   connectWiFi();
 
@@ -62,16 +69,19 @@ void loop() {
     lastMillis = millis();
 
     // read the sensor values
-    float temperature = dht.readTemperature(true);
-    float humidity    = dht.readHumidity();
+    float temperatureC = sht31.readTemperature();
+    float temperatureF = temperatureC * 1.8 + 32;
+    float humidity    = sht31.readHumidity();
 
-    Serial.print(temperature);
+    Serial.print(temperatureC);
+    Serial.print("°C ");
+    Serial.print(temperatureF);
     Serial.print("°F ");
     Serial.print(humidity);
     Serial.println("% RH");
     
     mqtt.beginMessage(temperatureTopic);
-    mqtt.print(temperature); 
+    mqtt.print(temperatureF); 
     mqtt.endMessage();
 
     mqtt.beginMessage(humidityTopic);

@@ -11,7 +11,7 @@ MqttClient mqtt(net);
 
 String ledTopic = "itp/" + DEVICE_ID + "/led";
 
-const int ledPin = 13;
+const int ledPin = LED_BUILTIN;
 int status = WL_IDLE_STATUS;
 
 void setup() {

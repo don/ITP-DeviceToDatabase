@@ -20,7 +20,7 @@ String countTopic = "itp/" + DEVICE_ID + "/count";
 String ledTopic = "itp/" + DEVICE_ID + "/led";
 
 const int buttonPin = 2;
-const int ledPin = 10;
+const int ledPin = LED_BUILTIN;
 int count = 0;
 int previousButtonValue = HIGH;
 
@@ -61,20 +61,25 @@ void loop() {
   // see if the value has changed
   if (buttonValue != previousButtonValue) {
 
-    mqtt.beginMessage(buttonTopic);
-    mqtt.print(buttonValue); 
-    mqtt.endMessage();
-
     // since we're using the internal pullup resistor
     // HIGH is released and LOW is pressed
     if (buttonValue == LOW) {
+
+      mqtt.beginMessage(buttonTopic);
+      mqtt.print("pressed"); 
+      mqtt.endMessage();
+      
       Serial.println("The button is pressed, increasing count.");
       count++;
       mqtt.beginMessage(countTopic);
       mqtt.print(count); 
       mqtt.endMessage();
     } else {
-      Serial.println("The button is released");      
+      Serial.println("The button is released");
+      mqtt.beginMessage(buttonTopic);
+      mqtt.print("released"); 
+      mqtt.endMessage();
+
     }
     previousButtonValue = buttonValue;
   }

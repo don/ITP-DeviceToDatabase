@@ -1,6 +1,9 @@
 #include <WiFiNINA.h>
 #include <ArduinoHttpClient.h>
 
+// Wire the button to buttonPin (2) and ground
+// When the button is pressed, data is posted via HTTP
+
 #include "config.h"
 
 // Use WiFiClient for HTTP, WiFiSSLClient for HTTPS

@@ -7,12 +7,12 @@
 Suggested wiring instructions:
 
 1. Place the solderless breadboard with A1 on the bottom left.
-1. Plug the Arduino Nano 33 IoT into the breadboard so pin D13 is in C1 on the breadboard.
-1. Plug the DHT22 sensor into E11
+1. Plug the Arduino Nano 33 IoT into the breadboard so pin D13 is in D1 on the breadboard.
+1. Plug the SHT31 sensor into E27
    * Run a red wire from the positive rail to A27
-   * Run a 10,000 &#937; resistor from the positive rail to A28
-   * Run a black wire from the negative rail to A30
-   * Run a blue wire from H1 (pin D3 in the Arduino) to B28
+   * Run a black wire from the negative rail to A28
+   * Run a blue wire from B8 (pin A4/SDA on the Arduino) to C30 (SDA on the SHT31)
+   * Run a yellow wire from B9 (pin A5/SCL on the Arduino) to B29 (SCL on the SHT31)
 1. Plug the LED into D19 and D20. Make sure the longer leg is in D19.
    * Run a 220 &#937; or 330 &#937; resistor from the negative rail to B20
    * Run a green wire from A1 (pin D13 on the Arduino) to B19 (the anode of the LED)
