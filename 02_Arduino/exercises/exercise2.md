@@ -2,7 +2,7 @@
 
 ## Wiring - Arduino Nano 33 IoT
 
-Start here for the Arduino Nano 33 IoT. If you're using the Arduino MKR WiFi 1010 instead, skip to the [alternate instructions](#wiring-arduino-mrk-wifi-1010).
+Start here for the Arduino Nano 33 IoT. If you're using the Arduino MKR WiFi 1010 instead, skip to the [alternate instructions](#wiring---arduino-mrk-wifi-1010).
 
 ![Fritzing Diagram](images/wiring_bb.png)
 
@@ -37,9 +37,9 @@ The Nano 33 IoT pins are labeled in [this diagram](https://content.arduino.cc/as
 
 Jump to the [Register MAC address with ITP Sandbox Network](#register-mac-address-with-itp-sandbox-network) section to continue the setup.
 
-## Wiring Arduino MRK WiFi 1010
+## Wiring - Arduino MRK WiFi 1010
 
-Skip this section if you're using the [Arduino Nano 33 IoT](#wiring-arduino-mrk-wifi-1010).
+Skip this section if you're using the [Arduino Nano 33 IoT](#wiring---arduino-nano-33-iot).
 
 ![Fritzing Diagram](images/mkr1010-wiring_bb.png)
 
