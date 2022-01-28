@@ -10,7 +10,6 @@
 import paho.mqtt.client as mqtt
 from time import sleep
 import smbus
-import board
 import RPi.GPIO as GPIO
 import config
 

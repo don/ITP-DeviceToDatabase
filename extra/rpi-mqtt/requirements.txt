@@ -1,6 +1,3 @@
 paho-mqtt
 RPI.GPIO
-adafruit-blinka
-adafruit-circuitpython-dht
 smbus
-
