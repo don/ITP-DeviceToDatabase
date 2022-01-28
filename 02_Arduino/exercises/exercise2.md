@@ -35,7 +35,7 @@ The Nano 33 IoT pins are labeled in [this diagram](https://content.arduino.cc/as
 
 ## Wiring Arduino MRK WiFi 1010
 
-![Fritzing Diagram](images/mkr-1010-wiring_bb.png)
+![Fritzing Diagram](images/mkr1010-wiring_bb.png)
 
 Suggested wiring instructions:
 
