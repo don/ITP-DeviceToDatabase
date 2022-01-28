@@ -2,6 +2,8 @@
 
 ## Wiring - Arduino Nano 33 IoT
 
+The recommended hardware for the class is the Arduino Nano 33 IoT. If you're using the Arduino MKR WiFi 1010 instead, skip to the [alternate instructions](#wiring-arduino-mrk-wifi-1010).
+
 ![Fritzing Diagram](images/wiring_bb.png)
 
 Suggested wiring instructions:
