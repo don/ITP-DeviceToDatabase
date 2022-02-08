@@ -73,9 +73,9 @@ Install the letsencrypt.org certbot
     snap install --classic certbot
     ln -s /snap/bin/certbot /usr/bin/certbot
 
-Get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when it asks you to redirect all http traffic to https.
+Use certbot to get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when certbot asks you to redirect all http traffic to https. Note that I specify the *old* X1 chain so certificate validation works for [MQTT-Explorer](https://github.com/thomasnordquist/MQTT-Explorer/issues/596#issuecomment-939856939).
 
-    certbot --nginx -d dev2db.com
+    certbot --nginx -d dev2db.com --preferred-chain "ISRG Root X1"
 
 Now you're ready to configure Mosquitto to use TLS for MQTT and WebSockets. Create a new configuration file /etc/mosquitto/conf.d/default.conf. This does 3 things 1) disables anonymous access. 2) use the TLS certificate for MQTTS on port 8883 and 3) enables websockets over TLS on port 8083.
 
