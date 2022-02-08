@@ -57,7 +57,7 @@ SSH back in
 
 Install the compiler tools, mosquitto broker, mosquitto clients, and nginx 
 
-	apt install build-essential mosquitto mosquitto-clients nginx -y
+    apt install build-essential mosquitto mosquitto-clients nginx -y
 
 Open the firewall for web traffic
 
@@ -68,7 +68,10 @@ Open your http://dev2db.com in a web browser to ensure nginx is running
 
 Install the letsencrypt.org certbot
 
-	apt install certbot python3-certbot-nginx -y
+    snap install core
+    snap refresh core
+    snap install --classic certbot
+    ln -s /snap/bin/certbot /usr/bin/certbot
 
 Get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when it asks you to redirect all http traffic to https.
 
