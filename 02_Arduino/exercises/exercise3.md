@@ -32,7 +32,7 @@ In this module, you will publish temperature and humidity data using HTTP. We wi
 
 1. Download and install Node.js 16.13.2 LTS from https://nodejs.org/en/
 1. Open a command prompt or terminal
-1. Navigate to the server directory under 02_Arduino e.g. *cd ITP_DeviceToDatabase/02_Arduino/server*
+1. Navigate to the server directory under 02_Arduino e.g. *cd ITP-DeviceToDatabase/02_Arduino/server*
 1. Run `npm install` to install the dependencies
 1. Run `node server.js` to start the server 
 
@@ -40,9 +40,9 @@ In this module, you will publish temperature and humidity data using HTTP. We wi
 
 ## Arduino
 
-Web traffic from the Arudino needs to be able to route to the laptop running the server. The easiest way to do that for this exercise is for the Arduino and the laptop to be on the same network. Note that some networks like nyu and nyuguest block you from running servers on their wireless network.
+Web traffic from the Arudino needs to be able to route to the laptop running the server. The easiest way to do that for this exercise is for the Arduino and the laptop to be on the same network. Devices connected to Sandbox370 can connect to your laptop on nyu wifi. Note that some networks, like nyuguest, block you from running servers. 
 
-1. Open arduino/HttpClient/HttpClient.ino in the Arduino IDE
+1. Open `arduino/HttpClient/HttpClient.ino` in the Arduino IDE
 1. Switch to the config.h tab
     1. Update WiFi ssid and password
     1. Add the laptop's IP address
@@ -90,7 +90,7 @@ Anyone can connect and post data to the server. Typically a server will require 
 
 Request from HttpClient will begin to fail with 401 when you start the new server. 
 
-1. Open arduino/HttpClientBasicAuth/HttpHttpClientBasicAuthClient.ino in the Arduino IDE
+1. Open `arduino/HttpClientBasicAuth/HttpHttpClientBasicAuthClient.ino` in the Arduino IDE
 1. Switch to the config.h tab
     1. Update WiFi ssid and password
     1. Add the laptop's IP address
