@@ -30,7 +30,7 @@ In this module, you will publish temperature and humidity data using HTTP. We wi
 
 ## Server
 
-1. Download and install Node.js 16.13.2 LTS from https://nodejs.org/en/
+1. Download and install Node.js 16.14.0 LTS from https://nodejs.org/en/
 1. Open a command prompt or terminal
 1. Navigate to the server directory under 02_Arduino e.g. *cd ITP-DeviceToDatabase/02_Arduino/server*
 1. Run `npm install` to install the dependencies
