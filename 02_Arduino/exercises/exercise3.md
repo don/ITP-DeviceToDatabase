@@ -80,7 +80,10 @@ Curl can also be used to fetch data
 Windows users can use Powershell to post data to the server
 
     Invoke-WebRequest -Uri http://192.168.86.32:3000 -Method POST -Body message="Hello from Powershell" -UseBasicParsing
+    
+Or retrieve data from the server
 
+    (Invoke-WebRequest -Uri http://192.168.86.32:3000/ -UseBasicParsing).Content
 
 ## Authenticating users and devices
 
