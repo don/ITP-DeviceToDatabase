@@ -20,6 +20,7 @@ function connect() {
     disconnectButton.hidden = false;
     radioButtons.disabled = false;
     document.querySelectorAll('input[type=text],input[type=password]').forEach(e => e.disabled = true);
+    topic.disabled = false;
   });
 
   client.on('error', function (message) {

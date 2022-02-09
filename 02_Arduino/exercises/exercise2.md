@@ -74,7 +74,7 @@ The MKR WiFi 1010 pins are labeled in [this diagram](https://docs.arduino.cc/sta
 
 ## Register MAC address with ITP Sandbox Network
 
-In order to join the `Sandbox370` wireless network, the MAC address of the device must be registered with [NYU-NET](https://computer.registration.nyu.edu/). Use the [MacAddress sketch](../arduino/MacAddress/MacAddress.ino) to get the MAC address for your device. 
+In order to join the `sandbox370` wireless network, the MAC address of the device must be registered with [NYU-NET](https://computer.registration.nyu.edu/). Use the [MacAddress sketch](../arduino/MacAddress/MacAddress.ino) to get the MAC address for your device. 
 
 [Tom Igoe's documentation](https://itp.nyu.edu/networks/tutorials/itp-network-connections/) has more details about the process.
 

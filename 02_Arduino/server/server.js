@@ -20,6 +20,6 @@ app.post("/", function (request, response) {
 });
 
 // listen for requests :)
-const listener = app.listen(process.env.PORT || '3000', function() {
+const listener = app.listen(process.env.PORT || '3000', '0.0.0.0', function() {
   console.log('Server is listening on port ' + listener.address().port);
 });

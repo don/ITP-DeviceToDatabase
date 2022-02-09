@@ -2,23 +2,20 @@
 #include <ArduinoBearSSL.h>
 #include <ArduinoECCX08.h>
 #include <ArduinoMqttClient.h>
+#include <Wire.h>
+#include "Adafruit_SHT31.h"
 
 #include "config.h"
 
-#include <DHT.h>
-
-#define DHTPIN 3          // Digital pin connected to the DHT sensor
-//#define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22     // DHT 22  (AM2302), AM2321
-DHT dht(DHTPIN, DHTTYPE);
+Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 WiFiClient wifiClient;
 BearSSLClient sslClient(wifiClient);
 MqttClient mqttClient(sslClient);
 
-// to support a dimmable LED, rewire the LED from pin 13 to pin 5
-// const int ledPin = 5;
-const int ledPin = 13;
+// to support a dimmable LED, rewire the LED from pin 13 to pin 12 on Nano 33 IoT
+// const int ledPin = 12
+const int ledPin = LED_BUILTIN;
 String clientId;
 
 // Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
@@ -38,9 +35,12 @@ void setup() {
   // initialize digital pin led as an output.
   pinMode(ledPin, OUTPUT);
 
-  // initialize the dht
-  dht.begin();
-
+  // initialize the SHT31 sensor
+  if (! sht31.begin(SHT31_DEFAULT_ADDR)) {
+    Serial.println("Couldn't find SHT31");
+    while (1) { delay(1); }       // wait forever
+  }
+  
   // set a callback to get the current time
   // used for certification validation
   ArduinoBearSSL.onGetTime(getTime);
@@ -157,13 +157,14 @@ void messageReceived(int messageSize) {
 void sendSensorData() {
 
   // read sensor values
-  float temperature = dht.readTemperature(true);         // °F
-  float humidity    = dht.readHumidity();                // % Relative Humidity
-
+  float temperatureC = sht31.readTemperature();
+  float temperatureF = temperatureC * 1.8 + 32;
+  float humidity    = sht31.readHumidity();
+    
   // Manually build JSON string
   String data =
     "{\n"
-    "  \"temperature\": " + String(temperature, 1) + ",\n"
+    "  \"temperature\": " + String(temperatureF, 1) + ",\n"
     "  \"humidity\": "    + String(humidity, 0)    + "\n"
     "}";
 

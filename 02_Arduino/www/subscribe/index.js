@@ -25,7 +25,7 @@ function connect() {
   client.on('message', function (topic, message) {
     // message is Buffer so call toString before logging
     console.log(topic, message.toString()); 
-    pre.innerText += '\n' + new Date() + '\t' + topic + '\t' + message;
+    pre.innerText += '\n' + new Date() + '\t' + topic.padEnd(30, ' ') + '\t' + message;
   })
 
   client.on('error', function (message) {
