@@ -38,7 +38,7 @@ After you make this change, and upload the code, you can plug the Arduino's USB 
 
 ## Additional Sensors
 
-Think about other sensors and actuators you could add to your Arduino. (This is just a though experiement, but you can actually build if you want.)
+Think about other sensors and actuators you could add to your Arduino. (This is just a though experiment, but you can actually build if you want.)
  * What sensor or actuator would you connect?
  * Would it send data?
  * Would it receive commands?
