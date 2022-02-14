@@ -25,11 +25,11 @@ SELECT d.name
 	WHERE d.person_id = p.id
 	AND p.name = 'Don';
 
--- who owns device_23
+-- who owns device_16
 SELECT p.name 
 	FROM device d, person p
 	WHERE d.person_id = p.id
-	AND d.name = 'device_23';
+	AND d.name = 'device_16';
 	
 -- show the person with sensor data
 SELECT p.name AS person, s.*
@@ -43,7 +43,7 @@ SELECT p.name AS person, s.*
 	FROM sensor_data s, person p, device d
 	WHERE s.device = d.name
 	AND d.person_id = p.id
-	AND p.name = 'Lanni'
+	AND p.name = 'Gracy'
 	LIMIT 10;
 
 -- query sensor data by person name and measurement	
@@ -51,7 +51,7 @@ SELECT p.name AS person, s.*
 	FROM sensor_data s, person p, device d
 	WHERE s.device = d.name
 	AND d.person_id = p.id
-	AND p.name = 'Yilin'
+	AND p.name = 'Chloe'
 	AND s.measurement = 'temperature'
 	LIMIT 10;
 	
