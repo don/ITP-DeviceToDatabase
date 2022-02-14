@@ -6,7 +6,7 @@
 -- Or include in a query 
 --     SELECT owner(device), device, count(*) FROM sensor_data GROUP BY device;
 --
-CREATE FUNCTION owner(device_name varchar) returns varchar AS $$
+CREATE OR REPLACE FUNCTION owner(device_name varchar) returns varchar AS $$
     SELECT p.name 
       FROM person p, device d 
       WHERE p.id = d.person_id 
