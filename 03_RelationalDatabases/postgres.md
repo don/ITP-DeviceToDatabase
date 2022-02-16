@@ -266,7 +266,7 @@ We can also limit our queries by time.
 
 ![screenshot query using where date between](img/where-between.png)
 
-If you look closely at the dates in that last query, they have a time zone offset of zero. Notice the `+00` at the end of the timestamp, `2022-02-15 00:00:08.91+00`. What time zone does PostgreSQL think we're in? UTC.
+If you look closely at the dates in that last query, they have a time zone offset of zero. Notice the `+00` at the end of the timestamp, `2022-02-15 00:00:00.062734+00`. What time zone does PostgreSQL think we're in? UTC.
 
     show timezone;
 
@@ -288,12 +288,20 @@ Fortunately we can tell `psql` what what time zone we are in and it will convert
  * [Every Time Zone](https://everytimezone.com)
  * [PostgreSQL Data Types: Date, Timestamp, and Time Zones](https://tapoueh.org/blog/2018/04/postgresql-data-types-date-timestamp-and-time-zones/)
 
-OK, back to querying. Now that we set the timezone in our client, dates are converted to Eastern Standard Time (or America/New_York) before they are shown to us. Notice the `-05` at the end of the timestamp `2022-02-14 00:00:09.394-05`? The first temperature value happens to be the same as before but we're seeing different data and different dates in our result set. The dates the in the BETWEEN clause are also treated as America/New_York (or Eastern Standard Time).
+OK, back to querying. Now that we set the timezone in our client, dates are converted to Eastern Standard Time (or America/New_York) before they are shown to us. Notice the `-05` at the end of the timestamp `2022-02-15 01:49:20.539686-05`? The first temperature is different than before. Since we changed the timezone, 2022-02-15 now starts at midnight eastern time.The dates the in the BETWEEN clause are also treated as America/New_York (or Eastern Standard Time).
 
     SELECT * FROM sensor_data 
         WHERE recorded_at BETWEEN '2022-02-15' AND '2022-02-16';
 
 ![screenshot showing dates in EST](img/dates-in-est.png)
+
+We can select the first row from the previous query using the row id
+
+    select * from sensor_data where id = 24157;
+
+When we change the time zone the row for the date changes from `2022-02-15 00:00:00.062734+00` to `2022-02-14 19:00:00.062734-05`. The time the record was recorded didn't change, we are just changing how we interpret the time.
+
+![screenshot one row](img/date-one-row.png)
 
 Instead of `America/New_York` you can set the timezone to `Asia/Shanghai` or `Asia/Seoul`.
 
