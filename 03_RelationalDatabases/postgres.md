@@ -262,7 +262,7 @@ We can include the min and max for each device in one query.
 We can also limit our queries by time.
 
     SELECT * FROM sensor_data 
-        WHERE recorded_at BETWEEN '2022-02-15' AND '2021-02-16';
+        WHERE recorded_at BETWEEN '2022-02-15' AND '2022-02-16';
 
 ![screenshot query using where date between](img/where-between.png)
 
@@ -291,7 +291,7 @@ Fortunately we can tell `psql` what what time zone we are in and it will convert
 OK, back to querying. Now that we set the timezone in our client, dates are converted to Eastern Standard Time (or America/New_York) before they are shown to us. Notice the `-05` at the end of the timestamp `2022-02-14 00:00:09.394-05`? The first temperature value happens to be the same as before but we're seeing different data and different dates in our result set. The dates the in the BETWEEN clause are also treated as America/New_York (or Eastern Standard Time).
 
     SELECT * FROM sensor_data 
-        WHERE recorded_at BETWEEN '2022-02-15' AND '2020-02-16';
+        WHERE recorded_at BETWEEN '2022-02-15' AND '2022-02-16';
 
 ![screenshot showing dates in EST](img/dates-in-est.png)
 
