@@ -65,7 +65,7 @@ We are only using the command line tools. You do **not** need to start the postg
 
 #### Windows
 
-Windows users should download the PostgreSQL 12 installer from EnterpriseDB https://www.enterprisedb.com/downloads/postgres-postgresql-downloads. During the installation you only need to install the command line tools. Optionally install the pgAdmin 4 GUI. You can uncheck PostgreSQL Server and Stack Builder.
+Windows users should download the PostgreSQL 14.2 installer from EnterpriseDB https://www.enterprisedb.com/downloads/postgres-postgresql-downloads. During the installation you only need to install the command line tools. Optionally install the pgAdmin 4 GUI. You can uncheck PostgreSQL Server and Stack Builder.
 
 ![screenshot windows install of postgres command line tools](img/pg-cli-install-windows.png)
 
