@@ -128,6 +128,8 @@ Run the select query again to view all the records.
 
 Try in insert some records on your own. Then select to view the records.
 
+## Arduino data and the itp database
+
 Now that you have learned to insert data into the database manually, we want to automatically insert every MQTT message into the table. There is a Node.js program running on the server the that subscribes to all MQTT topics and inserts the data into the `mqtt_messages` table in the `itp` database. 
 
 ![flowchart of data from arduino through mqtt to nodejs to the database](img/process-flow.png)
