@@ -1,4 +1,4 @@
-"-- Create and populate tables for people and devices
+-- Create and populate tables for people and devices
 
 -- SQLite Schema
 
