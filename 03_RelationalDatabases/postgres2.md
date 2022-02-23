@@ -229,6 +229,25 @@ You can select from a view just like it's a table.
 
 ![](img/f-over-100.png)
 
+You won't be able to create this view if it already exists. Check using the describe views command `\dv`.
+
+    farm=> \dv
+               List of relations
+     Schema |     Name      | Type | Owner 
+    --------+---------------+------+-------
+     public | v_temperature | view | don
+    (1 row)
+
+By default, only the user that created the view has access to the view
+
+    psql -h pg.dev2db.com -U maggie farm
+    farm=> select * from v_temperature limit 10;
+    ERROR:  permission denied for view v_temperature
+
+After creating a view, you can GRANT other user the permission to SELECT data. Note that we're granting select on a TABLE, even though it's a view.
+
+    GRANT SELECT ON TABLE v_temperature TO public;
+
 View can be more complex and roll up data. For example, you could create a view that had min, max, and average daily temperatures.
 
     CREATE VIEW v_daily_temp AS
@@ -237,6 +256,8 @@ View can be more complex and roll up data. For example, you could create a view 
             FROM sensor_data
             WHERE measurement = 'temperature'
             GROUP BY day, device;
+    
+    GRANT SELECT ON TABLE v_daily_temp TO public;
 
 Now you can easily get the min, max, and average temperatures for any day.
 

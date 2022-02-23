@@ -1,14 +1,12 @@
--- Create and populate tables for people and devices
--- SQLite and PostgreSQL have different sytax for
--- auto incrementing primary keys
+"-- Create and populate tables for people and devices
 
--- SQLite
+-- SQLite Schema
+
 CREATE TABLE person (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(50) NOT NULL UNIQUE      
 );
 
--- SQLite
 CREATE TABLE device (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -18,20 +16,6 @@ CREATE TABLE device (
 
 -- tell sqlite to enforce foreign keys
 PRAGMA foreign_keys=1;
-
--- -- PostgreSQL
--- CREATE TABLE person (
---     id SERIAL PRIMARY KEY,
---     name VARCHAR(50) NOT NULL UNIQUE
--- );
--- 
--- -- PostgreSQL
--- CREATE TABLE device (
---     id SERIAL PRIMARY KEY,
---     name VARCHAR(50) NOT NULL UNIQUE,
---     person_id INTEGER NOT NULL,
---     FOREIGN KEY (person_id) REFERENCES person(id)
--- );
 
 -- Data
 INSERT INTO person (id, name) VALUES (1, 'Ricardo');
@@ -57,7 +41,6 @@ INSERT INTO device (name, person_id) VALUES ('device_19', 10);
 INSERT INTO person (id, name) VALUES (11, 'Don');
 INSERT INTO device (name, person_id) VALUES ('device_00', 11);
 -- extra devices
-INSERT INTO device (name, person_id) SELECT 'machine', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_01', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_02', id FROM person WHERE name = 'Don';
 INSERT INTO device (name, person_id) SELECT 'device_03', id FROM person WHERE name = 'Don';

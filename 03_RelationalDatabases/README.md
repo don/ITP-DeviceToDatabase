@@ -2,5 +2,5 @@
 * [PostgreSQL Sensor Data Queries](postgres2.md)
 * [PostgreSQL Additional Queries](postgres3.md)
 * [SQLite](sqlite.md)
-* [Person Device Schema](person_device_schema.sql)
+* [Person Device Schema](person_device_sqlite.sql)
 * [Person Device Queries](person_device_queries.sql)

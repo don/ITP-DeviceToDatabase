@@ -13,3 +13,5 @@ CREATE OR REPLACE FUNCTION owner(device_name varchar) returns varchar AS $$
         AND d.name = $1;
 $$
 LANGUAGE SQL;
+
+GRANT EXECUTE ON FUNCTION owner TO public;

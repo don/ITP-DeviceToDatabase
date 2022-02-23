@@ -7,6 +7,12 @@ SELECT device.name AS device, person.name AS owner
 	WHERE device.person_id = person.id
 	ORDER BY device.name;
 
+-- alternate join syntax. this does the same thing as the first query
+SELECT device.name AS device, person.name AS owner
+	FROM device
+	RIGHT JOIN person ON device.person_id = person.id
+	ORDER BY device.name;
+
 -- device name and owner name using table aliases
 SELECT d.name AS device, p.name AS owner
 	FROM device d, person p
@@ -54,4 +60,13 @@ SELECT p.name AS person, s.*
 	AND p.name = 'Chloe'
 	AND s.measurement = 'temperature'
 	LIMIT 10;
+
+-- when was the last record sent for each person and device
+SELECT p.name AS person, d.name AS device, max(s.recorded_at) as last_recorded_at
+	FROM sensor_data s, person p, device d
+	WHERE s.device = d.name
+	AND d.person_id = p.id
+	AND p.name != 'Don'
+	GROUP BY person, device
+	ORDER BY last_recorded_at desc;
 	

@@ -43,16 +43,19 @@ Open your http://influx.dev2db.com in a web browser to ensure nginx is running
 
 Install the letsencrypt.org certbot
 
-	apt install python3-certbot-nginx -y
+    snap install core
+    snap refresh core
+    snap install --classic certbot
+    ln -s /snap/bin/certbot /usr/bin/certbot
 
 Get a TLS certificate from letsencrypt.org. Enter your email. Agree to the terms. Answer yes when it asks you to redirect all http traffic to https.
 
     certbot --nginx -d influx.dev2db.com
 
-Now that we have a TLS certificate, we can install InfluxDB
+Now that we have a TLS certificate, we can install InfluxDB. Install InfluxDB version 1.8.x.
 
-    wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.4_amd64.deb
-    sudo dpkg -i influxdb_1.8.4_amd64.deb
+    wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.10_amd64.deb
+    sudo dpkg -i influxdb_1.8.10_amd64.deb
 
 Copy the keys into the the influxdb directory
 
@@ -64,7 +67,7 @@ Change the owner of the private key to influxdb
 
     chown influxdb /etc/influxdb/privkey.pem
 
-Edit /etc/influxdb and adjust the configuration in the appropriate sections
+Edit /etc/influxdb/influxdb.conf and adjust the configuration in the appropriate sections
 
     auth-enabled = true	
     https-enabled = true
@@ -79,7 +82,7 @@ Open the firewall for influx
 
     ufw allow 8086
 
-Login into influx and create a password
+Login into influx and create the `admin` user. Until you do this anyone can login without a password.
 
     influx -host influx.dev2db.com -ssl
     create user admin with password [REDACTED] with all privileges;

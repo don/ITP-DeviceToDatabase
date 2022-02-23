@@ -4,7 +4,41 @@ SQLite is a C-language library that implements a small, fast, self-contained, hi
 
 ## Installing
 
-SQLite is included with macos. Windows users should download **sqlite-tools-win32** from https://www.sqlite.org/download.html.
+### macOS
+
+SQLite is included with macOS. 
+
+### Windows
+
+ * Download **sqlite-tools-win32** from https://www.sqlite.org/download.html
+ * Unzip the archive
+ * Move sqlite-tools-win32 to c:\Program Files
+ * Add c:\Program Files\sqlite-tools-win32... to your PATH
+ * [installation video](https://youtu.be/OKMfGFL6WSA)
+
+## Create a project directory
+
+We will be exporting PostgreSQL data and creating a SQLite databases in a directory on your file system. We need to use `psql` to export data and `sqlite3` to create the database and import data. Once the database is created, you can use TablePlus or another tool instead of the sqlite3 command line.
+
+### Windows
+
+Open a cmd prompt. Press Windows Key + R and type `cmd`.
+
+	cd Documents
+	mkdir week4
+	cd week4
+
+We need to run `psql` from this directory, you might need to update the system path.
+
+	set PATH=C:\Progra~1\PostgreSQL\14\bin;%PATH%
+
+### macOS
+
+Open a new terminal. Command + Space and type 'terminal'
+
+	cd ~/Documents
+	mkdir week4
+	cd week4
 
 ## Creating a database
 
@@ -12,12 +46,12 @@ Export some data from Postgres to create a SQLite database.
 
 	psql -h pg.dev2db.com -U your-username-here
 	\c farm
-	\copy (SELECT * FROM sensor_data WHERE recorded_at > '2020-12-31') to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
+	\copy (SELECT * FROM sensor_data WHERE recorded_at > '2020-12-31') to 'sensor_data.csv' DELIMITER ',' CSV HEADER;
 	\q
 	
 Note that we're exporting about 2 million rows so the data set is more manageable. If you want to export all 8.8 million rows you can use:
 
-	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
+	\copy sensor_data to 'sensor_data.csv' DELIMITER ',' CSV HEADER;
 
 Create a new SQLite database
 
@@ -35,7 +69,7 @@ Create a new table. Note that we skip the autoincremeting id column and instead 
 Import the CSV data into a temporary table
 
 	.mode csv
-	.import /tmp/sensor_data.csv data_temp
+	.import sensor_data.csv data_temp
 	
 The import created a new table, but all the column types are text
 
@@ -231,7 +265,7 @@ Export data some data from Postgres to create a SQLite database.
 
 	psql -h pg.dev2db.com -U xxx
 	\c itp
-	\copy sensor_data to '/tmp/sensor_data.csv' DELIMITER ',' CSV HEADER;
+	\copy sensor_data to 'sensor_data.csv' DELIMITER ',' CSV HEADER;
 	\q
 	
 Create a new database
@@ -250,7 +284,7 @@ Create a new table. Note that we skip the autoincremeting id column and instead 
 Import the CSV data into a temporary table
 
 	.mode csv
-	.import /tmp/sensor_data.csv data_temp
+	.import sensor_data.csv data_temp
 	
 Use a query to move the data into the sensor table. Note that we're appending :00 onto the date string. Dates in the CSV file ended with +00 for the timezone. SQLite is expecting +00:00.
 
@@ -261,7 +295,7 @@ Drop the data_temp table and vacuum to reclaim space
 	DROP TABLE data_temp;
 	VACUUM;
 
-Next we want to add the person and device tables using the [person_device_schema.sql](person_device_schema.sql) script. You can cut and paste the SQL from the script directly into an interactive sqlite terminal session. After creating the tables, you can view the databases schema.
+Next we want to add the person and device tables using the [person_device_sqlite.sql](person_device_sqlite.sql) script. You can cut and paste the SQL from the script directly into an interactive sqlite terminal session. After creating the tables, you can view the databases schema.
 
 	.schema
 	

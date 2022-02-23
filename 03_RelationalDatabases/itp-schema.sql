@@ -23,3 +23,7 @@ CREATE TABLE sensor_data_text (
     reading TEXT,
     recorded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+GRANT SELECT ON TABLE mqtt_message TO public;
+GRANT SELECT ON TABLE sensor_data TO public;
+GRANT SELECT ON TABLE sensor_data_text TO public;
