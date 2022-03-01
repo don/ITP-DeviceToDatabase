@@ -10,7 +10,7 @@ SELECT device.name AS device, person.name AS owner
 -- alternate join syntax. this does the same thing as the first query
 SELECT device.name AS device, person.name AS owner
 	FROM device
-	RIGHT JOIN person ON device.person_id = person.id
+	JOIN person ON device.person_id = person.id
 	ORDER BY device.name;
 
 -- device name and owner name using table aliases
