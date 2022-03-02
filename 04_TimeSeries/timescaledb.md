@@ -18,13 +18,13 @@ Connect to TimescaleDB using the psql, TablePlus or any tool that supports Postg
 
 ## Hypertables
 
-Once the timescale extension is installed, we can create a Postgres table and convert it to a TimescaleDB hypertable. Hypertables have a different way to store data on disk that is more efficient for time series. These changes are good for performance and mostly transparent to users. Hypertables, for the most part, look like a regular tables.
+After the timescale extension is installed, we can create a Postgres table and convert it to a TimescaleDB hypertable. Hypertables have a different way to store data on disk that is more efficient for time series. These changes are good for performance and mostly transparent to users. Hypertables, for the most part, look like a regular tables.
 
-A database administrator, such as the postgres user, must enable the TimescaleDB extension in each database. 
+A **database administrator**, such as the postgres user, must enable the TimescaleDB extension in each database. 
 
     CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
-Each student has database on the timescale.dev2db.com server. Your database name matches your username. The timescale extension has enabled for your database. This means that you can create your own hypertables.
+Each student has database on the timescale.dev2db.com server. Your database name matches your username. *The timescale extension has enabled for your database.* This means that you can create your own hypertables.
 
 Create a new sensor_data table in timescale, using the SQL CREATE syntax. Note that the `id` column has been removed.
 
@@ -39,17 +39,17 @@ Convert the sensor_data to a hypertable. The `create_hypertable` function takes 
 
     SELECT create_hypertable('sensor_data', 'recorded_at');
 
-See [creating hypertables](https://docs.timescale.com/latest/getting-started/creating-hypertables) for more details. 
+See [creating hypertables](https://docs.timescale.com/timescaledb/latest/how-to-guides/hypertables/create/#create-a-hypertable) for more details. 
 
 The [timescale setup](../setup/timescaledb.md) instructions have more details on how the ITP and Farm data was moved from PostgreSQL to TimescaleDB.
 
 ## Queries
 
-All the queries we did for with PostgreSQL in [week 4](../03_RelationalDatabases) should work here.
+All the queries we did for with PostgreSQL in [the RelationalDatabases chapters](../03_RelationalDatabases) should work here.
 
-The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/latest/using-timescaledb/reading-data#advanced-analytics). Many of these queries will work in PosgreSQL. The TimescaleDB specific functions are marked with `TSDB Function`.
+The TimescaleDB website has some great documentation about [Advanced Analytic Queries](https://docs.timescale.com/timescaledb/latest/how-to-guides/query-data/advanced-analytic-queries/#median-and-percentile). Many of these queries will work in PosgreSQL. The TimescaleDB specific functions are marked with `TSDB Function`.
 
-The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previously with PostgreSQL we used the `extract` function to extract dates and time parts from the recorded_at column to use for group by. See the [time_bucket API](https://docs.timescale.com/latest/api#time_bucket) for more details.
+The `time_bucket` function is TimescaleDB specific function that allows us to group data into time intervals. Previously with PostgreSQL we used the `extract` function to extract dates and time parts from the recorded_at column to use for group by. See the [time_bucket API](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/) for more details.
 
 Connect
 
@@ -150,7 +150,7 @@ Output
 
     tsfarm=> 
 
-See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/latest/using-timescaledb/reading-data). The have good examples of using SQL to aggregate data. Many of the examples run in PostgreSQL or TimescaleDB. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/latest/using-timescaledb/reading-data).
+See the TimescaleDB documentation for [Reading Data](https://docs.timescale.com/timescaledb/latest/how-to-guides/query-data/select/#select-commands). The have good examples of using SQL to aggregate data. Many of the examples run in PostgreSQL or TimescaleDB. TimescaleDB specific functions are marked with TSDB. Many examples use the `conditions` table containing temperature and humidity measurements. I've converted the farm data set into this format so you can try the queries from the [documentation](https://docs.timescale.com/timescaledb/latest/how-to-guides/query-data/select/#select-commands).
 
     tsfarm=> \d conditions
                             Table "public.conditions"
