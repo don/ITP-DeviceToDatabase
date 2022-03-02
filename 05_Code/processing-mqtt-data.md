@@ -353,7 +353,10 @@ Use datetime to show recorded_at in the local time zome
       FROM sensor_data 
       WHERE recorded_at > datetime('now', '-30 seconds') 
       ORDER BY recorded_at DESC;
+      
+## Other Databases
 
+You can use a similar approach to insert data from MQTT into our other databases: PostgreSQL, TimescaleDB, and InfluxDB. The MQTT code would be the same, but you will need to use different database drivers. Try https://www.npmjs.com/package/pg for PostgreSQL &amp; TimescaleDB and https://www.npmjs.com/package/influx for InfluxDB.
 
 # High Temperature Alert
 
