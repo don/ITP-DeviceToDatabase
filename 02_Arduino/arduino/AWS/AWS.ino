@@ -13,9 +13,8 @@ WiFiClient wifiClient;
 BearSSLClient sslClient(wifiClient);
 MqttClient mqttClient(sslClient);
 
-// to support a dimmable LED, rewire the LED from pin 13 to pin 12 on Nano 33 IoT
-// const int ledPin = 12
-const int ledPin = LED_BUILTIN;
+// To support a dimmable LED, rewire the LED from pin 13 to pin 12 on Nano 33 IoT
+const int ledPin = 12;
 String clientId;
 
 // Publish every 10 seconds for the workshop. Real world apps need this data every 5 or 10 minutes.
